@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="ms" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Disiplin & Buku Peraturan Digital KKTS</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#0b0f19',
+                        },
+                        brand: {
+                            blue: '#2563eb',
+                            cyan: '#06b6d4',
+                            amber: '#f59e0b',
+                            emerald: '#10b981',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'Segoe UI', 'sans-serif'],
+                    },
+                    animation: {
+                        'float-slow': 'float 8s ease-in-out infinite',
+                        'float-medium': 'float 5s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'wave-bar': 'wave 1.2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-20px) rotate(5deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+                            '50%': { opacity: '0.8', transform: 'scale(1.08)' },
+                        },
+                        wave: {
+                            '0%': { height: '10%' },
+                            '100%': { height: '100%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Early Theme Detection Script (Mencegah kerlipan tema) -->
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('jum_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            if (savedTheme === 'light') {
+                document.documentElement.classList.add('light');
+                document.documentElement.classList.remove('dark');
+            } else {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            }
+        })();
+    </script>
+
+    <style>
+        :root {
+            --bg-page: #0b0f19;
+            --text-page: #f8fafc;
+            --card-bg: rgba(15, 23, 42, 0.75);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            --input-bg: rgba(15, 23, 42, 0.8);
+            --input-border: rgba(255, 255, 255, 0.15);
+            --input-text: #ffffff;
+        }
+
+        html[data-theme="light"], body.theme-light {
+            --bg-page: #f8fafc;
+            --text-page: #0f172a;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --input-text: #0f172a;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-page);
+            overflow-x: hidden;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .glass-card-light {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-input {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--input-text);
+            transition: all 0.25s ease;
+        }
+        .glass-input:focus {
+            border-color: #06b6d4;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+            outline: none;
+        }
+
+        /* =============================================================
+           LIGHT THEME OVERRIDES (Semua jadi warna putih & bersih)
+        ============================================================= */
+        html[data-theme="light"] body {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+
+        html[data-theme="light"] .text-white:not(.keep-white) {
+            color: #0f172a !important;
+        }
+
+        html[data-theme="light"] .text-slate-100 {
+            color: #0f172a !important;
+        }
+
+        html[data-theme="light"] .text-slate-200 {
+            color: #1e293b !important;
+        }
+
+        html[data-theme="light"] .text-slate-300 {
+            color: #334155 !important;
+        }
+
+        html[data-theme="light"] .text-slate-400 {
+            color: #64748b !important;
+        }
+
+        html[data-theme="light"] .bg-slate-950,
+        html[data-theme="light"] .bg-slate-950\/80 {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+        }
+
+        html[data-theme="light"] .bg-slate-900,
+        html[data-theme="light"] .bg-slate-900\/40,
+        html[data-theme="light"] .bg-slate-900\/60,
+        html[data-theme="light"] .bg-slate-900\/70,
+        html[data-theme="light"] .bg-slate-900\/80,
+        html[data-theme="light"] .bg-slate-900\/95 {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+        }
+
+        html[data-theme="light"] .bg-slate-800,
+        html[data-theme="light"] .bg-slate-800\/80 {
+            background-color: #f1f5f9 !important;
+            border-color: #e2e8f0 !important;
+            color: #1e293b !important;
+        }
+
+        html[data-theme="light"] .border-slate-800,
+        html[data-theme="light"] .border-slate-700,
+        html[data-theme="light"] .border-slate-700\/50,
+        html[data-theme="light"] .border-slate-700\/60 {
+            border-color: #e2e8f0 !important;
+        }
+
+        html[data-theme="light"] .glass-card {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05) !important;
+        }
+
+        html[data-theme="light"] .glass-input {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        html[data-theme="light"] .glass-input::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        /* =============================================================
+           AMBIENT SMOOTH AURA & LIGHT THEME GRADIENT (Tidak terlalu putih)
+        ============================================================= */
+        .ambient-aura-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .aura-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(95px);
+            will-change: transform, opacity;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Dark mode aura: high-tech glow */
+        .aura-1 {
+            width: 540px;
+            height: 540px;
+            top: -90px;
+            left: -70px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.28) 0%, rgba(30, 64, 175, 0.10) 50%, transparent 70%);
+            animation: auraDriftA 18s ease-in-out infinite alternate;
+        }
+        .aura-2 {
+            width: 600px;
+            height: 600px;
+            top: 10%;
+            right: -110px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.22) 0%, rgba(14, 165, 233, 0.08) 50%, transparent 70%);
+            animation: auraDriftB 22s ease-in-out infinite alternate;
+        }
+        .aura-3 {
+            width: 500px;
+            height: 500px;
+            bottom: 5%;
+            left: 15%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, rgba(217, 119, 6, 0.05) 50%, transparent 70%);
+            animation: auraDriftC 20s ease-in-out infinite alternate;
+        }
+        .aura-4 {
+            width: 460px;
+            height: 460px;
+            top: 38%;
+            right: 22%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.16) 0%, rgba(79, 70, 229, 0.05) 50%, transparent 70%);
+            animation: auraDriftD 24s ease-in-out infinite alternate;
+        }
+
+        /* Light mode aura: awan warna lembut & sutera (tidak silau atau terlalu putih) */
+        html[data-theme="light"] .aura-1 {
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.24) 0%, rgba(147, 197, 253, 0.14) 45%, transparent 70%);
+            filter: blur(105px);
+            opacity: 0.95;
+        }
+        html[data-theme="light"] .aura-2 {
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.22) 0%, rgba(103, 232, 249, 0.12) 45%, transparent 70%);
+            filter: blur(115px);
+            opacity: 0.95;
+        }
+        html[data-theme="light"] .aura-3 {
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.17) 0%, rgba(253, 230, 138, 0.09) 45%, transparent 70%);
+            filter: blur(105px);
+            opacity: 0.90;
+        }
+        html[data-theme="light"] .aura-4 {
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(199, 210, 254, 0.08) 45%, transparent 70%);
+            filter: blur(115px);
+            opacity: 0.90;
+        }
+
+        @keyframes auraDriftA {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(75px, 55px) scale(1.12); }
+        }
+        @keyframes auraDriftB {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-65px, 75px) scale(1.15); }
+        }
+        @keyframes auraDriftC {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(55px, -45px) scale(0.94); }
+        }
+        @keyframes auraDriftD {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-45px, -55px) scale(1.08); }
+        }
+
+        /* Hero Section in Light Mode — Soft Pearlescent Sky Ambient */
+        html[data-theme="light"] #hero {
+            background: 
+                radial-gradient(1100px circle at 50% -80px, rgba(59, 130, 246, 0.12), transparent 60%),
+                radial-gradient(900px circle at 90% 450px, rgba(6, 182, 212, 0.11), transparent 55%),
+                radial-gradient(800px circle at 10% 350px, rgba(245, 158, 11, 0.09), transparent 50%),
+                linear-gradient(180deg, #f0f4f9 0%, #f6f9fc 35%, #edf3f8 100%) !important;
+        }
+
+        html[data-theme="light"] .hero-mesh {
+            background-image: radial-gradient(rgba(100, 116, 139, 0.15) 1.2px, transparent 1.2px) !important;
+            background-size: 28px 28px !important;
+            opacity: 0.35 !important;
+        }
+
+        html[data-theme="light"] .lift-divider-line {
+            height: 1.5px !important;
+            border: none !important;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), rgba(6, 182, 212, 0.4), transparent) !important;
+        }
+
+        /* Akta 174 Card floating glass */
+        html[data-theme="light"] .bg-slate-900\/40 {
+            background: rgba(255, 255, 255, 0.88) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.95) !important;
+            box-shadow: 0 12px 28px -6px rgba(37, 99, 235, 0.10), 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        /* Top official badge */
+        html[data-theme="light"] .bg-slate-800\/80 {
+            background: rgba(255, 255, 255, 0.92) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(203, 213, 225, 0.9) !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08) !important;
+        }
+        html[data-theme="light"] .text-cyan-300 {
+            color: #0284c7 !important;
+        }
+
+        /* Sections background with smooth transition */
+        html[data-theme="light"] #ringkasan {
+            background: linear-gradient(180deg, #edf3f8 0%, #f6f9fc 50%, #edf3f8 100%) !important;
+        }
+
+        html[data-theme="light"] #etika {
+            background: linear-gradient(180deg, #edf3f8 0%, #e6eff7 50%, #edf3f8 100%) !important;
+            border-color: rgba(203, 213, 225, 0.7) !important;
+        }
+
+        html[data-theme="light"] #prosiding {
+            background: linear-gradient(180deg, #edf3f8 0%, #f6f9fc 50%, #edf3f8 100%) !important;
+        }
+
+        html[data-theme="light"] #ebook {
+            background: linear-gradient(180deg, #edf3f8 0%, #f3f7fa 50%, #edf3f8 100%) !important;
+            border-color: rgba(203, 213, 225, 0.7) !important;
+        }
+
+        html[data-theme="light"] #ikrar {
+            background: linear-gradient(180deg, #edf3f8 0%, #f6f9fc 100%) !important;
+        }
+
+        html[data-theme="light"] #lyricsContainer {
+            background-color: rgba(255, 255, 255, 0.92) !important;
+            border: 1px solid rgba(226, 232, 240, 0.9) !important;
+            color: #475569 !important;
+        }
+
+        html[data-theme="light"] blockquote {
+            background-color: rgba(255, 255, 255, 0.92) !important;
+            border-color: rgba(226, 232, 240, 0.9) !important;
+            color: #334155 !important;
+        }
+
+        html[data-theme="light"] footer {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            color: #64748b !important;
+        }
+
+        html[data-theme="light"] footer .text-slate-200 {
+            color: #0f172a !important;
+        }
+
+        html[data-theme="light"] .book-cover-frame {
+            background: linear-gradient(145deg, #f1f5f9, #e2e8f0) !important;
+            border: 2px solid #cbd5e1 !important;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15), 0 0 0 6px #f8fafc, 0 0 0 8px rgba(37, 99, 235, 0.25) !important;
+        }
+
+        html[data-theme="light"] #flowchartModal {
+            background-color: rgba(15, 23, 42, 0.45) !important;
+        }
+
+        html[data-theme="light"] #flowchartModal .glass-card {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+        }
+
+        /* Filter buttons in Light Mode */
+        html[data-theme="light"] .cat-btn:not(.active) {
+            background: #f1f5f9 !important;
+            border: 1px solid #e2e8f0 !important;
+            color: #475569 !important;
+        }
+        html[data-theme="light"] .cat-btn:not(.active):hover {
+            background: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+        html[data-theme="light"] .cat-btn.active {
+            background: #2563eb !important;
+            color: #ffffff !important;
+        }
+
+        /* Gender buttons in Light Mode */
+        html[data-theme="light"] #btnGenderMale:not(.bg-gradient-to-r),
+        html[data-theme="light"] #btnGenderFemale:not(.bg-gradient-to-r) {
+            color: #64748b !important;
+        }
+        html[data-theme="light"] #btnGenderMale:not(.bg-gradient-to-r):hover,
+        html[data-theme="light"] #btnGenderFemale:not(.bg-gradient-to-r):hover {
+            color: #0f172a !important;
+        }
+
+        /* Reader toolbar in Light Mode */
+        html[data-theme="light"] #pageSelectDropdown {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+        html[data-theme="light"] #btnPrevBook,
+        html[data-theme="light"] #btnNextBook {
+            background-color: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+        html[data-theme="light"] #btnBookMode {
+            background-color: #eff6ff !important;
+            border-color: #bfdbfe !important;
+            color: #1d4ed8 !important;
+        }
+
+        /* Solid colored buttons & badges MUST keep white text */
+        .keep-white,
+        .bg-gradient-to-r,
+        .bg-gradient-to-r *,
+        .bg-blue-600,
+        .bg-blue-600 *,
+        .bg-cyan-600,
+        .bg-cyan-600 *,
+        .bg-amber-600,
+        .bg-amber-600 *,
+        .bg-red-600,
+        .bg-red-600 *,
+        .bg-emerald-600,
+        .bg-emerald-600 *,
+        .cat-btn.active,
+        .cat-btn.active * {
+            color: #ffffff !important;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2563eb;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+
+        /* Custom Parallax Layer Speeds */
+        .parallax-bg-glow {
+            will-change: transform;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #60a5fa 0%, #06b6d4 50%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 3D Interactive Book Flip Styles */
+        .book-stage {
+            perspective: 2200px;
+        }
+        .book-cover-frame {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 2px solid rgba(148, 163, 184, 0.25);
+            box-shadow:
+                0 30px 60px -12px rgba(0, 0, 0, 0.75),
+                0 0 0 6px #0b132b,
+                0 0 0 8px rgba(59, 130, 246, 0.3);
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            transform-style: preserve-3d;
+        }
+        .book-page-sheet {
+            background: #ffffff;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.45s ease;
+            transform-style: preserve-3d;
+        }
+        .book-page-left {
+            border-radius: 10px 0 0 10px;
+            box-shadow:
+                inset -18px 0 28px -12px rgba(15, 23, 42, 0.28),
+                -4px 0 0 #e2e8f0,
+                -8px 0 0 #cbd5e1;
+            transform-origin: right center;
+        }
+        .book-page-right {
+            border-radius: 0 10px 10px 0;
+            box-shadow:
+                inset 18px 0 28px -12px rgba(15, 23, 42, 0.28),
+                4px 0 0 #e2e8f0,
+                8px 0 0 #cbd5e1;
+            transform-origin: left center;
+        }
+        .book-page-single {
+            border-radius: 12px;
+            box-shadow:
+                0 20px 45px rgba(0, 0, 0, 0.5),
+                4px 0 0 #e2e8f0,
+                8px 0 0 #cbd5e1;
+        }
+        .book-spine-line {
+            width: 4px;
+            background: linear-gradient(to right, rgba(15,23,42,0.45), rgba(255,255,255,0.2), rgba(15,23,42,0.45));
+            z-index: 20;
+            flex-shrink: 0;
+        }
+        @keyframes flipNextAnim {
+            0%   { transform: rotateY(0deg); }
+            45%  { transform: rotateY(-14deg) scale(0.985); }
+            100% { transform: rotateY(0deg); }
+        }
+        @keyframes flipPrevAnim {
+            0%   { transform: rotateY(0deg); }
+            45%  { transform: rotateY(14deg) scale(0.985); }
+            100% { transform: rotateY(0deg); }
+        }
+        .animate-flip-next {
+            animation: flipNextAnim 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .animate-flip-prev {
+            animation: flipPrevAnim 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* =============================================================
+           ANIMASI INTRO & TEKS NAIK DARI LIF / GARISAN PEMISAH (SMOOTH)
+        ============================================================= */
+        .lift-mask {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            justify-content: center;
+            vertical-align: bottom;
+            padding-bottom: 4px;
+        }
+        .lift-mask-block {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            padding-top: 4px;
+            padding-bottom: 6px;
+        }
+        /* Garisan pemisah bercahaya halus di tapak lif semasa teks keluar */
+        .lift-mask::after,
+        .lift-mask-block::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 90%;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.65), rgba(59, 130, 246, 0.65), transparent);
+            transform: translateX(-50%) scaleX(0);
+            opacity: 0;
+            pointer-events: none;
+            animation: liftLineFlash 1.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: var(--lift-delay, 0s);
+        }
+        .lift-item {
+            display: inline-block;
+            will-change: transform, opacity;
+            transform: translate3d(0, 118%, 0);
+            opacity: 0;
+            animation: liftRiseUp 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: var(--lift-delay, 0s);
+        }
+        .lift-divider-line {
+            transform: scaleX(0);
+            opacity: 0;
+            transform-origin: center;
+            will-change: transform, opacity;
+            animation: dividerExpand 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: var(--lift-delay, 0s);
+        }
+
+        @keyframes liftRiseUp {
+            0% {
+                transform: translate3d(0, 118%, 0);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: translate3d(0, 0%, 0);
+                opacity: 1;
+            }
+        }
+        @keyframes liftLineFlash {
+            0% {
+                transform: translateX(-50%) scaleX(0);
+                opacity: 0;
+            }
+            30% {
+                transform: translateX(-50%) scaleX(1);
+                opacity: 0.95;
+            }
+            100% {
+                transform: translateX(-50%) scaleX(0.2);
+                opacity: 0;
+            }
+        }
+        @keyframes dividerExpand {
+            0% {
+                transform: scaleX(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+        }
+
+        /* Scroll-triggered elevator reveal untuk semua bahagian lain */
+        .scroll-lift-mask {
+            position: relative;
+            overflow: hidden;
+        }
+        .scroll-lift-item {
+            will-change: transform, opacity;
+            transform: translate3d(0, 110%, 0);
+            opacity: 0;
+            transition: transform 1.05s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s ease;
+            transition-delay: var(--scroll-delay, 0s);
+        }
+        .scroll-lift-mask.is-visible .scroll-lift-item,
+        .scroll-lift-item.is-visible {
+            transform: translate3d(0, 0%, 0);
+            opacity: 1;
+        }
+    </style>
+    <!-- PDF.js CDN for Real PDF Book Rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body class="antialiased text-slate-100 selection:bg-cyan-500 selection:text-white">
+
+    <!-- Scroll Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-1 z-50 bg-slate-800">
+        <div id="progressBar" class="h-full bg-gradient-to-r from-blue-600 via-cyan-400 to-amber-400 w-0 transition-all duration-150"></div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Navigation Header (digabungkan ke bar atas utama) -->
+    <header class="fixed top-0 left-0 w-full z-40 transition-all duration-300" id="mainHeader" style="display: none;">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToTop()">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-amber-500 p-0.5 shadow-lg shadow-cyan-500/20">
+                    <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-between px-2">
+                        <span class="font-extrabold text-cyan-400 text-lg">KK</span>
+                        <span class="font-bold text-amber-400 text-sm">TS</span>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-tight text-white flex items-center gap-2">
+                        Disiplin KK Tawau
+                        <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Portal Digital</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Kolej Komuniti Tawau, Sabah • Akta 174</p>
+                </div>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 bg-slate-900/60 backdrop-blur-md p-1.5 rounded-full border border-slate-700/50">
+                <a href="#hero" class="px-4 py-2 rounded-full text-xs font-semibold hover:bg-slate-800 text-slate-300 hover:text-white transition">Utama</a>
+                <a href="#ringkasan" class="px-4 py-2 rounded-full text-xs font-semibold hover:bg-slate-800 text-slate-300 hover:text-white transition">Matriks Denda</a>
+                <a href="#etika" class="px-4 py-2 rounded-full text-xs font-semibold hover:bg-slate-800 text-slate-300 hover:text-white transition">Kod Rupa Diri</a>
+                <a href="#prosiding" class="px-4 py-2 rounded-full text-xs font-semibold hover:bg-slate-800 text-slate-300 hover:text-white transition">Carta Akta 174</a>
+                <a href="#ebook" class="px-4 py-2 rounded-full text-xs font-semibold hover:bg-slate-800 text-slate-300 hover:text-white transition">E-Buku Teks</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-3">
+                <a href="#ringkasan" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-lg shadow-cyan-500/25 transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-solid font-bold fa-book-open"></i>
+                    Buku Peraturan
+                </a>
+                <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-slate-300">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-xl border-b border-slate-800 px-6 py-4 space-y-3">
+            <a href="#hero" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-slate-200">Utama</a>
+            <a href="#ringkasan" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-slate-200">Matriks Denda & Hukuman</a>
+            <a href="#etika" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-slate-200">Kod Rupa Diri Pelajar</a>
+            <a href="#prosiding" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-slate-200">Prosiding Akta 174</a>
+            <a href="#ebook" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-slate-200">E-Buku Peraturan 2022</a>
+        </div>
+    </header>
+
+    <!-- SECTION 1: HERO & LOGIN PARALLAX SECTION -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center pt-10 pb-16 px-4 overflow-hidden">
+        <!-- Parallax Background Glow Orbs -->
+        <div id="paraBg1" class="parallax-bg-glow absolute top-10 left-10 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none animate-float-slow"></div>
+        <div id="paraBg2" class="parallax-bg-glow absolute bottom-10 right-10 w-[500px] h-[500px] bg-cyan-500/15 rounded-full blur-[150px] pointer-events-none animate-float-medium"></div>
+        <div id="paraBg3" class="parallax-bg-glow absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[180px] pointer-events-none"></div>
+
+        <!-- Floating Geometric Mesh Deco -->
+        <div class="hero-mesh absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-30 pointer-events-none"></div>
+
+        <!-- Ambient Smooth Aura Orbs (Menjadikan background lembut & tidak terlalu putih) -->
+        <div class="ambient-aura-container" aria-hidden="true">
+            <div class="aura-orb aura-1"></div>
+            <div class="aura-orb aura-2"></div>
+            <div class="aura-orb aura-3"></div>
+            <div class="aura-orb aura-4"></div>
+        </div>
+
+        <div class="relative z-10 max-w-4xl w-full mx-auto flex flex-col items-center">
+            
+            <!-- Hero Text (Tengah) dengan Animasi Lif / Garisan Pemisah -->
+            <div id="paraText" class="w-full space-y-6 text-center flex flex-col items-center transition-transform duration-100 ease-out">
+                
+                <!-- 1. Lencana Edisi Rasmi -->
+                <div class="lift-mask-block" style="--lift-delay: 0.08s;">
+                    <div class="lift-item inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/60 backdrop-blur-md" style="--lift-delay: 0.08s;">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span class="text-xs font-semibold text-cyan-300">Edisi Rasmi 2022 • Terikat Akta 174 HEP</span>
+                    </div>
+                </div>
+
+                <!-- 2. Tajuk Utama (Muncul baris demi baris dari garisan pemisah bawah) -->
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight flex flex-col items-center gap-1">
+                    <span class="lift-mask" style="--lift-delay: 0.22s;">
+                        <span class="lift-item" style="--lift-delay: 0.22s;">Sistem Panduan &amp;</span>
+                    </span>
+                    <span class="lift-mask" style="--lift-delay: 0.38s;">
+                        <span class="lift-item" style="--lift-delay: 0.38s;"><span class="text-gradient">Disiplin Digital</span> KKTS</span>
+                    </span>
+                </h1>
+
+                <!-- 3. Penerangan Sub-tajuk -->
+                <div class="lift-mask-block max-w-2xl mx-auto" style="--lift-delay: 0.54s;">
+                    <p class="lift-item text-slate-300 text-base sm:text-lg leading-relaxed" style="--lift-delay: 0.54s;">
+                        Platform pengurusan tatatertib, hebahan peraturan am, dan semakan hukuman rasmi bagi melahirkan modal insan TVET berdisiplin tinggi dan berprestasi unggul.
+                    </p>
+                </div>
+
+                <!-- 4. Garisan Pemisah & Kad Akta 174 di tengah -->
+                <div class="w-full max-w-lg mx-auto pt-2">
+                    <div class="lift-divider-line border-t border-slate-800 w-full mb-4" style="--lift-delay: 0.68s;"></div>
+                    <div class="lift-mask-block" style="--lift-delay: 0.76s;">
+                        <div class="lift-item bg-slate-900/40 px-8 py-3 rounded-xl border border-slate-800 text-center" style="--lift-delay: 0.76s;">
+                            <div class="text-xl sm:text-2xl font-black text-cyan-400">Akta 174</div>
+                            <div class="text-[11px] text-slate-400 uppercase tracking-wider mt-0.5">Seksyen HEP</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Butang Tindakan Utama -->
+                <div class="lift-mask-block pt-2" style="--lift-delay: 0.92s;">
+                    <div class="lift-item flex flex-wrap items-center justify-center gap-4" style="--lift-delay: 0.92s;">
+                        <a href="#ringkasan" class="px-6 py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-700 hover:opacity-95 text-white shadow-xl shadow-cyan-500/20 flex items-center gap-3 transition-all transform hover:-translate-y-1">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            Cari Peraturan &amp; Denda
+                        </a>
+                        <a href="#ebook" class="px-6 py-3.5 rounded-xl font-bold text-sm bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 flex items-center gap-3 transition">
+                            <i class="fa-solid fa-book text-amber-400"></i>
+                            Baca E-Buku Peraturan
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Scroll Down Indicator (Ikon sahaja) -->
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center cursor-pointer" onclick="scrollToSection('ringkasan')">
+            <div class="lift-mask-block" style="--lift-delay: 1.08s;">
+                <div class="lift-item w-6 h-10 rounded-full border-2 border-slate-700 flex justify-center p-1" style="--lift-delay: 1.08s;">
+                    <div class="w-1.5 h-3 bg-cyan-400 rounded-full animate-bounce"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: RINGKASAN EKSEKUTIF HUKUMAN & PERATURAN -->
+    <section id="ringkasan" class="relative py-20 px-4 max-w-7xl mx-auto">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider">
+                Bahagian B • Matriks Kesalahan
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Ringkasan Eksekutif Hukuman & Denda</h2>
+            <p class="text-slate-400 text-sm">Carian pantas dan panduan senarai kesalahan disiplin serta bentuk tindakan mengikut Akta 174 (Edisi 2022).</p>
+        </div>
+
+        <!-- Interactive Search Engine & Filter Tabs -->
+        <div class="glass-card rounded-2xl p-6 mb-8 space-y-4">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <!-- Live Search Box -->
+                <div class="relative w-full md:w-96">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" id="ruleSearchInput" onkeyup="filterRuleCards()" placeholder="Cari kesalahan (cth: vape, rambut, RM30, solat)..." class="w-full glass-input rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500">
+                </div>
+
+                <!-- Category Filters -->
+                <div class="flex flex-wrap gap-2 w-full md:w-auto justify-start md:justify-end">
+                    <button onclick="setRuleCategory('all')" class="cat-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition">Semua Kesalahan</button>
+                    <button onclick="setRuleCategory('berat')" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition">Tatatertib Berat</button>
+                    <button onclick="setRuleCategory('denda')" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition">Denda RM30</button>
+                    <button onclick="setRuleCategory('akademik')" class="cat-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition">Kehadiran / Kuliah</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid of Interactive Rule Cards -->
+        <div id="rulesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic JS populated or static pre-rendered cards with metadata -->
+        </div>
+    </section>
+
+    <!-- SECTION 3: KOD RUPA DIRI & ETIKA PEMAKAIAN (BAHAGIAN C) -->
+    <section id="etika" class="relative py-20 px-4 bg-slate-900/40 border-y border-slate-800">
+        <div class="max-w-7xl mx-auto space-y-12">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-wider">
+                    Bahagian C • Etika Pelajar
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Rupa Diri Pelajar & Etika Pemakaian Di Kolej</h2>
+                <p class="text-slate-400 text-sm">Panduan bergambar visual etika berpakaian, gaya rambut, dan tatatertib harian di Kolej Komuniti Tawau.</p>
+            </div>
+
+            <!-- Gender Interactive Selector -->
+            <div class="flex justify-center">
+                <div class="inline-flex p-1.5 bg-slate-950 rounded-2xl border border-slate-800 shadow-xl">
+                    <button id="btnGenderMale" onclick="switchGenderAttire('male')" class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md flex items-center gap-2">
+                        <i class="fa-solid fa-mars text-sm"></i> Pelajar Lelaki
+                    </button>
+                    <button id="btnGenderFemale" onclick="switchGenderAttire('female')" class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-2">
+                        <i class="fa-solid fa-venus text-sm"></i> Pelajar Perempuan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Male Attire Guidelines Panel -->
+            <div id="panelMaleAttire" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Hair Rule Card -->
+                <div class="glass-card rounded-2xl p-6 space-y-4 hover:border-cyan-500/40 transition">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-scissors"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Potongan Rambut Lelaki</h3>
+                    <ul class="text-xs text-slate-300 space-y-2.5 list-disc pl-4">
+                        <li><strong>Bahagian Depan:</strong> Tidak melepasi paras dahi / kening.</li>
+                        <li><strong>Bahagian Tepi:</strong> Tidak menutup atau menyentuh cuping telinga.</li>
+                        <li><strong>Bahagian Belakang:</strong> Tidak melepasi kolar baju.</li>
+                        <li><strong>Warna:</strong> Dilarang mewarna rambut dengan warna tidak semulajadi.</li>
+                    </ul>
+                </div>
+
+                <!-- Clothing Rule Card -->
+                <div class="glass-card rounded-2xl p-6 space-y-4 hover:border-blue-500/40 transition">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-shirt"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Baju Kemeja & T-Shirt</h3>
+                    <ul class="text-xs text-slate-300 space-y-2.5 list-disc pl-4">
+                        <li>Baju Kemeja berkolar atau T-Shirt Berkolar Rasmi KKTS.</li>
+                        <li>Wajib dimasukkan ke dalam seluar (<i>tuck-in</i>) secara kemas.</li>
+                        <li>Dilarang memakai pakaian berunsur politik, lucah, atau provokatif.</li>
+                    </ul>
+                </div>
+
+                <!-- Pants & Footwear Card -->
+                <div class="glass-card rounded-2xl p-6 space-y-4 hover:border-amber-500/40 transition">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-shoe-prints"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Seluar Slack & Kasut</h3>
+                    <ul class="text-xs text-slate-300 space-y-2.5 list-disc pl-4">
+                        <li>Seluar Slack panjang kemas. Dilarang seluar ketat/jeans koyak.</li>
+                        <li>Kasut bertutup penuh dan berstoking. Selipar ditegah sama sekali.</li>
+                        <li>Kad Matrik wajib dipamerkan di dada sepanjang masa.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Female Attire Guidelines Panel (Hidden initially) -->
+            <div id="panelFemaleAttire" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Muslimah Card -->
+                <div class="glass-card rounded-2xl p-6 space-y-4 hover:border-emerald-500/40 transition">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-person-dress"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Pelajar Muslimah</h3>
+                    <ul class="text-xs text-slate-300 space-y-2.5 list-disc pl-4">
+                        <li>Baju Kurung berserta Tudung yang menutup dada dengan sempurna.</li>
+                        <li>Pakaian tidak ketat atau jarang mengikut syariat Islam.</li>
+                        <li>Dilarang bersolek tebal atau memakai perhiasan berlebihan.</li>
+                    </ul>
+                </div>
+
+                <!-- Non-Muslim Card -->
+                <div class="glass-card rounded-2xl p-6 space-y-4 hover:border-cyan-500/40 transition">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-user-ninja"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Pelajar Bukan Muslimah</h3>
+                    <ul class="text-xs text-slate-300 space-y-2.5 list-disc pl-4">
+                        <li>Pakaian sopan bertutup (Baju Blouse kolar/Skat melepasi paras lutut).</li>
+                        <li>Dilarang memakai baju tanpa lengan (<i>sleeveless</i>) atau berseluar pendek.</li>
+                        <li>Rambut dikemas dengan rapi dan tidak diwarna terang.</li>
+                    </ul>
+                </div>
+
+                <!-- Footwear Card -->
+                <div class="glass-card rounded-2xl p-6 space-y-4 hover:border-amber-500/40 transition">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold">
+                        <i class="fa-solid fa-shoe-prints"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white">Kasut & Aksesori</h3>
+                    <ul class="text-xs text-slate-300 space-y-2.5 list-disc pl-4">
+                        <li>Kasut bertutup penuh (Bertumit rendah / Kasut Sukan bertutup).</li>
+                        <li>Kuku sentiasa pendek dan tidak diwarnakan (Lut/Cat kuku dilarang).</li>
+                        <li>Kad Matrik digantung mengikut lanyard rasmi KKTS.</li>
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+
+    <!-- SECTION 4: CARTA ALIR PROSIDING TATATERTIB (BAHAGIAN A) -->
+    <section id="prosiding" class="relative py-20 px-4 max-w-7xl mx-auto">
+        <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-wider">
+                Bahagian A • Akta 174
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Carta Alir Prosiding Tatatertib Pelajar</h2>
+            <p class="text-slate-400 text-sm">Klik pada mana-mana langkah di bawah untuk membaca penerangan terperinci proses siasatan Akta 174.</p>
+        </div>
+
+        <!-- Flowchart Steps Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
+            <!-- Step 1 -->
+            <div onclick="openFlowchartStep(1)" class="glass-card p-5 rounded-2xl cursor-pointer hover:border-blue-500 transition group transform hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">01</span>
+                    <i class="fa-solid fa-file-circle-exclamation text-blue-400 group-hover:scale-110 transition"></i>
+                </div>
+                <h4 class="font-bold text-sm text-white mb-1">1. Aduan & Siasatan</h4>
+                <p class="text-[11px] text-slate-400">Laporan rasmi diterima oleh Pegawai Disiplin / HEP.</p>
+            </div>
+
+            <!-- Step 2 -->
+            <div onclick="openFlowchartStep(2)" class="glass-card p-5 rounded-2xl cursor-pointer hover:border-cyan-500 transition group transform hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-cyan-600 text-white font-bold text-xs flex items-center justify-center">02</span>
+                    <i class="fa-solid fa-envelope-open-text text-cyan-400 group-hover:scale-110 transition"></i>
+                </div>
+                <h4 class="font-bold text-sm text-white mb-1">2. Prima Facie</h4>
+                <p class="text-[11px] text-slate-400">Surat Pertuduhan Rasmi dikeluarkan kepada pelajar.</p>
+            </div>
+
+            <!-- Step 3 -->
+            <div onclick="openFlowchartStep(3)" class="glass-card p-5 rounded-2xl cursor-pointer hover:border-amber-500 transition group transform hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-amber-600 text-white font-bold text-xs flex items-center justify-center">03</span>
+                    <i class="fa-solid fa-gavel text-amber-400 group-hover:scale-110 transition"></i>
+                </div>
+                <h4 class="font-bold text-sm text-white mb-1">3. Perbicaraan JTP</h4>
+                <p class="text-[11px] text-slate-400">Sidang Jawatankuasa Tatatertib Pelajar KKTS.</p>
+            </div>
+
+            <!-- Step 4 -->
+            <div onclick="openFlowchartStep(4)" class="glass-card p-5 rounded-2xl cursor-pointer hover:border-red-500 transition group transform hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-red-600 text-white font-bold text-xs flex items-center justify-center">04</span>
+                    <i class="fa-solid fa-triangle-exclamation text-red-400 group-hover:scale-110 transition"></i>
+                </div>
+                <h4 class="font-bold text-sm text-white mb-1">4. Keputusan Hukuman</h4>
+                <p class="text-[11px] text-slate-400">Pengeluaran Surat Keputusan Hukuman/Denda.</p>
+            </div>
+
+            <!-- Step 5 -->
+            <div onclick="openFlowchartStep(5)" class="glass-card p-5 rounded-2xl cursor-pointer hover:border-emerald-500 transition group transform hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center">05</span>
+                    <i class="fa-solid fa-scale-balanced text-emerald-400 group-hover:scale-110 transition"></i>
+                </div>
+                <h4 class="font-bold text-sm text-white mb-1">5. Hak Rayuan</h4>
+                <p class="text-[11px] text-slate-400">Mengemukakan rayuan dalam tempoh 14 hari ke JPPKK.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5: MOD PEMBACA BUKU TEKS DIGITAL (E-BOOK READER VIEW) -->
+    <section id="ebook" class="relative py-20 px-4 bg-slate-900/60 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto space-y-8">
+            
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-wider">
+                    E-Book Reader • Salinan Sah PDF
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Buku Peraturan Am KKTS (Edisi 2022)</h2>
+                <p class="text-slate-400 text-sm">Gunakan kawalan navigasi di bawah atau klik pada helaian buku untuk menyelak dokumen PDF rasmi.</p>
+            </div>
+
+            <!-- Reader Toolbar -->
+            <div class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button id="btnPrevBook" onclick="prevBookPage()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 flex items-center gap-1.5 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        <span>Sebelumnya</span>
+                    </button>
+                    <span class="text-xs font-bold text-cyan-400 px-3 whitespace-nowrap">
+                        Muka Surat <span id="currentPageNum">1</span> / <span id="totalPageNum">48</span>
+                    </span>
+                    <button id="btnNextBook" onclick="nextBookPage()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-200 flex items-center gap-1.5 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                        <span>Seterusnya</span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                    <!-- Toggle Mod Buku 2 Helaian / 1 Helaian -->
+                    <button id="btnBookMode" onclick="toggleBookViewMode()" class="ml-1 px-3 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-xs font-bold text-blue-300 flex items-center gap-1.5 transition" title="Tukar Mod Paparan Buku">
+                        <i id="bookModeIcon" class="fa-solid fa-book-open"></i>
+                        <span id="bookModeLabel">Mod Buku (2 Helaian)</span>
+                    </button>
+                </div>
+
+                <!-- Page Selector Dropdown & Direct PDF Link -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs text-slate-400 hidden sm:inline">Lompat Ke:</span>
+                    <select id="pageSelectDropdown" onchange="jumpToBookPage(this.value)" class="glass-input rounded-xl px-3 py-1.5 text-xs text-white max-w-[260px] sm:max-w-xs">
+                        <option value="1">M/S 1 — Kulit Hadapan Buku Peraturan</option>
+                        <option value="3">M/S 3 — Hak Cipta & Penerbitan (eISBN)</option>
+                        <option value="4">M/S 4 — Sidang Redaksi & Penghargaan</option>
+                        <option value="6">M/S 6 — Kata Alu-Aluan Pengarah & Editor</option>
+                        <option value="9">M/S 9 — Prakata & Isi Kandungan</option>
+                        <option value="13">M/S 13 — Bahagian A: Pengurusan Disiplin & Akta 174</option>
+                        <option value="16">M/S 16 — Carta Alir Prosiding Kes Disiplin</option>
+                        <option value="21">M/S 21 — Bahagian B: Ringkasan Eksekutif Hukuman</option>
+                        <option value="24">M/S 24 — Jadual Perlanggaran Disiplin & Denda</option>
+                        <option value="29">M/S 29 — Bahagian C: Panduan & Peraturan Am Kolej</option>
+                        <option value="31">M/S 31 — Kad Pelajar & Peraturan Rupa Diri</option>
+                        <option value="35">M/S 35 — Kehadiran Kuliah, Kebersihan & Vandalisme</option>
+                        <option value="37">M/S 37 — Larangan Merokok/Vape & Rumah Sewa</option>
+                        <option value="38">M/S 38 — Peraturan Perpustakaan & Lalu Lintas</option>
+                        <option value="41">M/S 41 — Bahagian D: Lampiran, Ikrar & Borang</option>
+                        <option value="46">M/S 46 — Lagu Kolej Komuniti & Rujukan</option>
+                        <option value="48">M/S 48 — Kulit Belakang</option>
+                    </select>
+                    <a href="/Buku_Peraturan_Am_KKTS_Edisi_2022.pdf" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 text-amber-300 text-xs font-bold flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span>Buka PDF</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Interactive 3D Open-Book PDF Viewer -->
+            <div class="book-stage flex flex-col items-center justify-center py-2 select-none">
+                <!-- Loading Indicator -->
+                <div id="pdfLoadingState" class="glass-card rounded-3xl p-12 text-center space-y-3 w-full max-w-2xl">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-cyan-400"></i>
+                    <p class="text-sm font-bold text-white">Memuatkan Buku Peraturan Am KKTS (PDF)...</p>
+                    <p class="text-xs text-slate-400">Sila tunggu sebentar sementara helaian buku disediakan.</p>
+                </div>
+
+                <!-- Book Frame -->
+                <div id="bookCoverFrame" class="book-cover-frame rounded-2xl p-3 sm:p-5 hidden relative max-w-full">
+                    <div id="bookSpreadWrapper" class="flex items-stretch justify-center relative">
+                        
+                        <!-- Left Page -->
+                        <div id="leftPageWrapper" onclick="prevBookPage()" class="book-page-sheet book-page-left cursor-pointer group relative flex flex-col items-center justify-center bg-white" title="Klik untuk selak ke halaman sebelumnya">
+                            <canvas id="pdfCanvasLeft" class="block max-w-full h-auto"></canvas>
+                            <div class="absolute bottom-2 left-3 px-2 py-0.5 rounded bg-slate-900/70 text-[10px] font-bold text-white pointer-events-none" id="leftPageBadge">M/S 1</div>
+                            <div class="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-blue-600/15 to-transparent opacity-0 group-hover:opacity-100 transition flex items-center justify-start pl-2 pointer-events-none">
+                                <span class="w-7 h-7 rounded-full bg-slate-900/80 text-white flex items-center justify-center text-xs shadow"><i class="fa-solid fa-chevron-left"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Center Book Spine -->
+                        <div id="bookSpineLine" class="book-spine-line hidden"></div>
+
+                        <!-- Right Page -->
+                        <div id="rightPageWrapper" onclick="nextBookPage()" class="book-page-sheet book-page-right cursor-pointer group relative hidden flex-col items-center justify-center bg-white" title="Klik untuk selak ke halaman seterusnya">
+                            <canvas id="pdfCanvasRight" class="block max-w-full h-auto"></canvas>
+                            <div class="absolute bottom-2 right-3 px-2 py-0.5 rounded bg-slate-900/70 text-[10px] font-bold text-white pointer-events-none" id="rightPageBadge">M/S 2</div>
+                            <div class="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-blue-600/15 to-transparent opacity-0 group-hover:opacity-100 transition flex items-center justify-end pr-2 pointer-events-none">
+                                <span class="w-7 h-7 rounded-full bg-slate-900/80 text-white flex items-center justify-center text-xs shadow"><i class="fa-solid fa-chevron-right"></i></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Helper Caption Below Book -->
+                <div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
+                    <i class="fa-solid fa-hand-pointer text-amber-400"></i>
+                    <span>Tip: Klik terus pada helaian <strong>kiri</strong> atau <strong>kanan</strong> buku untuk menyelak muka surat seperti buku sebenar.</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 6: TEKS IKRAR & LAGU KOLEJ KOMUNITI (BAHAGIAN D) -->
+    <section id="ikrar" class="relative py-20 px-4 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            
+            <!-- Ikrar Card -->
+            <div class="glass-card rounded-3xl p-8 space-y-6 border-l-4 border-l-blue-500">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-hands-holding-child text-lg"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-white">Teks Ikrar Pelajar KKTS</h3>
+                </div>
+                <blockquote class="text-slate-300 italic text-sm leading-relaxed bg-slate-900/60 p-5 rounded-2xl border border-slate-800">
+                    "Bahawasanya kami, pelajar-pelajar Kolej Komuniti Tawau, dengan ini berikrar dan berjanji akan mematuhi semua peraturan dan undang-undang, serta menumpukan segala usaha dan tenaga kami untuk meningkatkan prestasi dalam kegiatan akademik dan ko-kurikulum bagi menjaga nama baik Kolej Komuniti Tawau."
+                </blockquote>
+            </div>
+
+            <!-- Simulated Song Player Card -->
+            <div class="glass-card rounded-3xl p-8 space-y-6 border-l-4 border-l-amber-500 relative overflow-hidden">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-music text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Lagu Kolej Komuniti</h3>
+                            <p class="text-xs text-slate-400">Pemain Audio Rasmi</p>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase">Audio HD</span>
+                </div>
+
+                <!-- Lyrics Display Area -->
+                <div id="lyricsContainer" class="bg-slate-950 p-4 rounded-2xl border border-slate-800 text-center text-xs text-slate-200 space-y-2.5 font-medium max-h-40 overflow-y-auto scroll-smooth">
+                    <p class="lyric-line transition-all duration-300" data-start="0" data-end="18">Seia dan sekata,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="18" data-end="22">Teguh ilmu di dada,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="22" data-end="26">Bersama mengorak langkah,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="26" data-end="31">Membina generasi berjaya.</p>
+                    <p class="lyric-line transition-all duration-300" data-start="31" data-end="36">Kitalah penerus alaf wawasan,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="36" data-end="41">Meningkatkan bakat insan,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="41" data-end="45">Kolej Komuniti,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="45" data-end="51">Di sini medan menggapai bintang.</p>
+                    <p class="lyric-line transition-all duration-300" data-start="51" data-end="56">Terus berbakti dan cemerlang,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="56" data-end="61">Bersama menabur jasa,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="61" data-end="66">Jiwa Satu Malaysia,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="66" data-end="71">Megahmu di mercu jaya,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="71" data-end="77">Berbudi menjadi nyata.</p>
+                    <p class="lyric-line transition-all duration-300" data-start="77" data-end="83">Kitalah penerus alaf wawasan,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="83" data-end="89">Meningkatkan bakat insan,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="89" data-end="94">Kolej Komuniti,</p>
+                    <p class="lyric-line transition-all duration-300" data-start="94" data-end="110">Di sini medan menggapai bintang!</p>
+                </div>
+
+                <!-- Audio Controls -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between gap-4">
+                        <button id="btnPlayAudio" onclick="toggleSimulatedAudio()" class="w-12 h-12 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 flex items-center justify-center text-lg font-bold shadow-lg shadow-amber-500/20 transition">
+                            <i id="playAudioIcon" class="fa-solid fa-play"></i>
+                        </button>
+
+                        <!-- Equalizer Animation Bars -->
+                        <div class="flex items-end gap-1.5 h-8 flex-1 justify-center px-4">
+                            <div class="w-1.5 bg-amber-400 rounded-full h-2 animate-wave-bar"></div>
+                            <div class="w-1.5 bg-amber-400 rounded-full h-5 animate-wave-bar" style="animation-delay: 0.2s"></div>
+                            <div class="w-1.5 bg-amber-400 rounded-full h-3 animate-wave-bar" style="animation-delay: 0.4s"></div>
+                            <div class="w-1.5 bg-amber-400 rounded-full h-7 animate-wave-bar" style="animation-delay: 0.1s"></div>
+                            <div class="w-1.5 bg-amber-400 rounded-full h-4 animate-wave-bar" style="animation-delay: 0.3s"></div>
+                        </div>
+
+                        <span id="audioTimer" class="text-xs font-mono text-slate-400">00:00 / 00:00</span>
+                    </div>
+                </div>
+
+                <!-- Pemain YouTube tersembunyi (audio lagu rasmi) -->
+                <div style="position:absolute; width:1px; height:1px; overflow:hidden; opacity:0; pointer-events:none;">
+                    <div id="ytSongPlayer"></div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-12 px-4 text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-xs">
+                    KKTS
+                </div>
+                <div>
+                    <p class="font-bold text-slate-200">Kolej Komuniti Tawau, Sabah</p>
+                    <p>Perdana Square Commercial Centre, Batu 4 Jalan Apas, 91000 Tawau</p>
+                </div>
+            </div>
+
+            <div class="text-center md:text-right space-y-1">
+                <p>© 2026 <strong>Jum Disiplin</strong> — Kolej Komuniti Tawau (Akta 174 HEP)</p>
+                <p>Hak Cipta Terpelihara • Unit Pembangunan Pelajar KKTS</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- FLOWCHART MODAL DIALOG -->
+    <div id="flowchartModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-card max-w-lg w-full rounded-3xl p-6 space-y-4 relative border-cyan-500/40">
+            <button onclick="closeFlowchartModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="flex items-center gap-3">
+                <div id="modalStepBadge" class="w-10 h-10 rounded-xl bg-cyan-600 text-white font-bold flex items-center justify-center">01</div>
+                <h3 id="modalStepTitle" class="text-lg font-bold text-white">Siasatan Awal</h3>
+            </div>
+            <p id="modalStepDesc" class="text-xs text-slate-300 leading-relaxed">Penerangan terperinci bagi langkah prosiding...</p>
+            <div class="pt-4 border-t border-slate-800 text-right">
+                <button onclick="closeFlowchartModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white">Tutup Detail</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* -------------------------------------------------------------
+           0. THEME MANAGEMENT (Sokongan Penuh Mod Terang / Mod Gelap)
+        ------------------------------------------------------------- */
+        function applyTheme(t) {
+            const currentTheme = t || localStorage.getItem('jum_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                if (document.body) {
+                    document.body.classList.add('theme-light');
+                    document.body.classList.remove('theme-dark');
+                }
+            } else {
+                document.documentElement.classList.remove('light');
+                document.documentElement.classList.add('dark');
+                if (document.body) {
+                    document.body.classList.add('theme-dark');
+                    document.body.classList.remove('theme-light');
+                }
+            }
+        }
+        window.applyTheme = applyTheme;
+
+        window.addEventListener('message', function(e) {
+            if (e.data && e.data.type === 'SET_THEME') {
+                applyTheme(e.data.theme);
+            }
+        });
+
+        applyTheme();
+
+        /* -------------------------------------------------------------
+           1. DATABASE KESALAHAN & DENDA (BAHAGIAN B - EDISI 2022)
+        ------------------------------------------------------------- */
+        const rulesDatabase = [
+            {
+                id: 1,
+                title: "Tidak Mempamer / Merosakkan / Menghilang Kad Pelajar",
+                penalty: "Denda RM30.00 + Kos Ganti RM10.00",
+                section: "Seksyen 25(1)(2)(3)",
+                category: "denda",
+                icon: "fa-address-card",
+                severity: "Denda Ringan",
+                badgeBg: "bg-blue-500/20 text-blue-400"
+            },
+            {
+                id: 2,
+                title: "Pelanggaran Etika Pakaian / Rambut Berwarna / Aurat",
+                penalty: "Denda RM30.00 / Rampas Barangan",
+                section: "Seksyen 3(b), Seksyen 6",
+                category: "denda",
+                icon: "fa-shirt",
+                severity: "Denda Ringan",
+                badgeBg: "bg-cyan-500/20 text-cyan-400"
+            },
+            {
+                id: 3,
+                title: "Tidak Hadir Kuliah / Bengkel Tanpa Sebab (< 80%)",
+                penalty: "Gagal Subjek / Mengulang Semester / Diberhentikan",
+                section: "PPKPKK / Seksyen 6",
+                category: "akademik",
+                icon: "fa-user-xmark",
+                severity: "Tatatertib Berat",
+                badgeBg: "bg-red-500/20 text-red-400"
+            },
+            {
+                id: 4,
+                title: "Merokok atau Memegang / Menggunakan Vape dalam Kampus",
+                penalty: "Denda RM30.00 + Rampas Barangan",
+                section: "Seksyen 26",
+                category: "denda",
+                icon: "fa-smoking-ban",
+                severity: "Denda Ringan",
+                badgeBg: "bg-amber-500/20 text-amber-400"
+            },
+            {
+                id: 5,
+                title: "Memiliki Arak, Dadah, Bahan Lucah, atau Berjudi",
+                penalty: "Buang Kolej / Gantung Pengajian",
+                section: "Seksyen 17, 18, 19, 20",
+                category: "berat",
+                icon: "fa-wine-bottle",
+                severity: "Kesalahan Syariah / Jenayah",
+                badgeBg: "bg-red-500/20 text-red-400"
+            },
+            {
+                id: 6,
+                title: "Vandalisme / Merosakkan Harta Benda Kolej",
+                penalty: "Ganti Rugi Kos + Tindakan Tatatertib",
+                section: "Seksyen 3(g)(h), Seksyen 65(1)",
+                category: "berat",
+                icon: "fa-house-chimney-crack",
+                severity: "Tatatertib Berat",
+                badgeBg: "bg-red-500/20 text-red-400"
+            },
+            {
+                id: 7,
+                title: "Pelajar Lelaki & Perempuan Tinggal Serumah / Khalwat",
+                penalty: "Buang Kolej serta-merta",
+                section: "Seksyen 3(b) HEP",
+                category: "berat",
+                icon: "fa-people-roof",
+                severity: "Kesalahan Syariah",
+                badgeBg: "bg-purple-500/20 text-purple-400"
+            },
+            {
+                id: 8,
+                title: "Pelajar Lelaki Tidak Solat Jumaat / Tidak Berpuasa",
+                penalty: "Denda Minimum RM30.00",
+                section: "Seksyen 3(b) HEP",
+                category: "denda",
+                icon: "fa-mosque",
+                severity: "Tindakan Agama",
+                badgeBg: "bg-emerald-500/20 text-emerald-400"
+            },
+            {
+                id: 9,
+                title: "Membawa Kenderaan Tanpa Pelekat / Lesen / Roadtax",
+                penalty: "Denda RM30.00 - RM100.00",
+                section: "Seksyen 35(1)(2)",
+                category: "denda",
+                icon: "fa-motorcycle",
+                severity: "Lalu Lintas Kampus",
+                badgeBg: "bg-blue-500/20 text-blue-400"
+            }
+        ];
+
+        /* -------------------------------------------------------------
+           2. PARALLAX SCROLL ENGINE & HEADER CONTROLLER
+        ------------------------------------------------------------- */
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollY / docHeight) * 100;
+
+            // Update Top Progress Bar
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+
+            // Header Background Glass Blur Toggle
+            const header = document.getElementById('mainHeader');
+            if (scrollY > 50) {
+                header.classList.add('bg-slate-950/80', 'backdrop-blur-xl', 'border-b', 'border-slate-800', 'shadow-2xl');
+            } else {
+                header.classList.remove('bg-slate-950/80', 'backdrop-blur-xl', 'border-b', 'border-slate-800', 'shadow-2xl');
+            }
+
+            // Depth Parallax Movements for Hero Orbs & Text
+            const paraBg1 = document.getElementById('paraBg1');
+            const paraBg2 = document.getElementById('paraBg2');
+            const paraText = document.getElementById('paraText');
+            const paraCard = document.getElementById('paraCard');
+
+            if (paraBg1 && paraBg2 && paraText) {
+                paraBg1.style.transform = `translateY(${scrollY * 0.35}px)`;
+                paraBg2.style.transform = `translateY(${scrollY * -0.25}px)`;
+                paraText.style.transform = `translateY(${scrollY * 0.12}px)`;
+                if (paraCard) paraCard.style.transform = `translateY(${scrollY * 0.08}px)`;
+            }
+        });
+
+        /* -------------------------------------------------------------
+           3. DYNAMIC RULE CARDS RENDER & SEARCH FILTER
+        ------------------------------------------------------------- */
+        let currentCategory = 'all';
+
+        function renderRuleCards(data) {
+            const container = document.getElementById('rulesGrid');
+            container.innerHTML = '';
+
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400">
+                        <i class="fa-solid fa-folder-open text-4xl mb-3 text-slate-600"></i>
+                        <p class="text-sm">Tiada kes atau peraturan ditemui padan dengan carian anda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            data.forEach(rule => {
+                const cardHtml = `
+                    <div class="glass-card rounded-2xl p-6 space-y-4 hover:border-cyan-500/50 transition transform hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${rule.badgeBg}">
+                                ${rule.severity}
+                            </span>
+                            <span class="text-[11px] font-mono text-slate-400">${rule.section}</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-slate-800 text-cyan-400 flex items-center justify-center flex-shrink-0 text-lg">
+                                <i class="fa-solid ${rule.icon}"></i>
+                            </div>
+                            <h3 class="text-sm font-bold text-white leading-snug">${rule.title}</h3>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+                            <span class="text-xs text-slate-400">Tindakan:</span>
+                            <span class="text-xs font-extrabold text-amber-400">${rule.penalty}</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+        }
+
+        function filterRuleCards() {
+            const query = document.getElementById('ruleSearchInput').value.toLowerCase();
+            const filtered = rulesDatabase.filter(item => {
+                const matchesCat = (currentCategory === 'all') || (item.category === currentCategory);
+                const matchesQuery = item.title.toLowerCase().includes(query) ||
+                                     item.penalty.toLowerCase().includes(query) ||
+                                     item.section.toLowerCase().includes(query);
+                return matchesCat && matchesQuery;
+            });
+            renderRuleCards(filtered);
+        }
+
+        function setRuleCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'active');
+                btn.classList.add('bg-slate-800', 'text-slate-300');
+            });
+            event.target.classList.remove('bg-slate-800', 'text-slate-300');
+            event.target.classList.add('bg-blue-600', 'text-white', 'active');
+            filterRuleCards();
+        }
+
+        /* -------------------------------------------------------------
+           4. E-BOOK PDF READER CONTROLLER (48 PAGES - OPEN BOOK FLIP)
+        ------------------------------------------------------------- */
+        const PDF_FILE_URL = '/Buku_Peraturan_Am_KKTS_Edisi_2022.pdf';
+        let pdfDoc = null;
+        let currentPage = 1;
+        let totalPdfPages = 48;
+        let isBookSpreadMode = true; // true = 2 helaian (bentuk buku), false = 1 helaian
+        let isRenderingBook = false;
+
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        async function initPdfBookReader() {
+            const loadingEl = document.getElementById('pdfLoadingState');
+            const frameEl = document.getElementById('bookCoverFrame');
+            try {
+                if (!window.pdfjsLib) throw new Error('PDF.js tidak dimuatkan');
+                const loadingTask = pdfjsLib.getDocument(PDF_FILE_URL);
+                pdfDoc = await loadingTask.promise;
+                totalPdfPages = pdfDoc.numPages;
+                document.getElementById('totalPageNum').innerText = totalPdfPages;
+
+                // Bina semua pilihan muka surat dalam dropdown
+                populatePageDropdown(totalPdfPages);
+
+                if (loadingEl) loadingEl.classList.add('hidden');
+                if (frameEl) frameEl.classList.remove('hidden');
+
+                await renderBookPage(1);
+            } catch (err) {
+                console.error('Ralat memuatkan PDF:', err);
+                if (loadingEl) {
+                    loadingEl.innerHTML = `
+                        <div class="space-y-4">
+                            <i class="fa-solid fa-file-pdf text-4xl text-amber-400"></i>
+                            <p class="text-sm font-bold text-white">Buku Peraturan Am KKTS (Edisi 2022)</p>
+                            <iframe src="${PDF_FILE_URL}" class="w-full h-[650px] rounded-xl border border-slate-700 bg-white"></iframe>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function populatePageDropdown(numPages) {
+            const select = document.getElementById('pageSelectDropdown');
+            if (!select) return;
+            const specialLabels = {
+                1: 'Kulit Hadapan Buku Peraturan',
+                3: 'Hak Cipta & Penerbitan (eISBN)',
+                4: 'Sidang Redaksi',
+                5: 'Sekalung Penghargaan',
+                6: 'Kata Alu-Aluan Pengarah',
+                7: 'Kata Alu-Aluan Timbalan Pengarah',
+                8: 'Kata Alu-Aluan Editor',
+                9: 'Prakata',
+                10: 'Isi Kandungan (Bahagian A - C)',
+                11: 'Isi Kandungan (Bahagian C - D)',
+                13: 'Bahagian A: Pengurusan Disiplin & Tatatertib',
+                14: 'Pengenalan & Ringkasan Akta 174',
+                15: 'Jawatankuasa Tatatertib (JTP) & Rujukan',
+                16: 'Carta Alir Sebelum Prosiding Kes Disiplin',
+                17: 'Carta Alir Semasa Prosiding Kes Disiplin',
+                18: 'Carta Alir Selepas Prosiding Kes Disiplin',
+                19: 'Pengurusan Rayuan Pelajar',
+                21: 'Bahagian B: Ringkasan Eksekutif Hukuman',
+                22: 'Pengesahan Undang-Undang & Hukuman',
+                24: 'Jadual Kesalahan & Denda (Kad Pelajar & Rupa Diri)',
+                25: 'Jadual Kesalahan (Vandalisme, Dadah & Ketenteraman)',
+                26: 'Jadual Kesalahan (Merokok/Vape, Rumah Sewa & Perpustakaan)',
+                27: 'Jadual Kesalahan (Lalu Lintas & Kesalahan Berat)',
+                28: 'Jadual Kesalahan (Pemalsuan, Khalwat & Penipuan)',
+                29: 'Bahagian C: Panduan dan Peraturan Am',
+                30: 'Pendaftaran & Lapor Diri Pelajar Kanan',
+                31: 'Kad Pelajar & Peraturan Umum Rupa Diri',
+                32: 'Peraturan Pemakaian & Rambut Pelajar Lelaki',
+                33: 'Etika Pemakaian Lelaki & Peraturan Perempuan',
+                34: 'Etika Pemakaian Pelajar Perempuan & Riadah',
+                35: 'Kehadiran Kuliah (≥80%), Kebersihan & Vandalisme',
+                36: 'Politik, Dadah/Mabuk, Ketenteraman & Agensi Luar',
+                37: 'Larangan Merokok/Vape, Aktiviti & Rumah Sewa',
+                38: 'Solat/Puasa, Kawasan Larangan & Perpustakaan',
+                39: 'Peraturan Perpustakaan, Komputer & Kenderaan',
+                40: 'Peraturan Lalu Lintas & Kesalahan Jenayah',
+                41: 'Bahagian D: Lampiran Borang',
+                42: 'Teks Ikrar Pelajar Kolej Komuniti',
+                43: 'Borang Ikrar Pelajar & Lepas Tanggung',
+                44: 'Borang Permohonan Cuti Pelajar',
+                45: 'Borang Aduan Salahlaku Disiplin Pelajar',
+                46: 'Lagu Kolej Komuniti',
+                47: 'Senarai Rujukan Rasmi',
+                48: 'Kulit Belakang'
+            };
+            select.innerHTML = '';
+            for (let p = 1; p <= numPages; p++) {
+                if (p === 2) continue; // M/S 2 ialah helaian kosong dalam kulit
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.textContent = specialLabels[p] ? `M/S ${p} — ${specialLabels[p]}` : `Muka Surat ${p}`;
+                select.appendChild(opt);
+            }
+        }
+
+        async function renderSinglePdfPage(pageNumber, canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas || !pdfDoc) return;
+            const page = await pdfDoc.getPage(pageNumber);
+
+            const isMobile = window.innerWidth < 768;
+            const targetWidth = isBookSpreadMode && !isMobile ? 430 : Math.min(620, window.innerWidth - 64);
+            const unscaledViewport = page.getViewport({ scale: 1 });
+            const scale = targetWidth / unscaledViewport.width;
+            const outputScale = window.devicePixelRatio || 1;
+            const viewport = page.getViewport({ scale: scale * outputScale });
+
+            canvas.width = Math.floor(viewport.width);
+            canvas.height = Math.floor(viewport.height);
+            canvas.style.width = Math.floor(viewport.width / outputScale) + 'px';
+            canvas.style.height = Math.floor(viewport.height / outputScale) + 'px';
+
+            const ctx = canvas.getContext('2d');
+            await page.render({ canvasContext: ctx, viewport }).promise;
+        }
+
+        function getSpreadPages(pageNum) {
+            if (!isBookSpreadMode || window.innerWidth < 768) {
+                return [pageNum, null];
+            }
+            if (pageNum <= 3) {
+                // Paparan pertama buku dibuka: M/S 1 (Kulit) di kiri & M/S 3 (Penerbitan) di kanan
+                return [1, 3];
+            }
+            if (pageNum >= totalPdfPages) {
+                return [totalPdfPages, null];
+            }
+            // Pasangan halaman genap (kiri) & ganjil (kanan) mengikut cetakan buku sebenar
+            const left = pageNum % 2 === 0 ? pageNum : pageNum - 1;
+            const right = left + 1 <= totalPdfPages ? left + 1 : null;
+            return [left, right];
+        }
+
+        async function renderBookPage(pageNum, direction = null) {
+            if (!pdfDoc || isRenderingBook) return;
+            isRenderingBook = true;
+
+            pageNum = Math.max(1, Math.min(totalPdfPages, pageNum));
+            const [leftPage, rightPage] = getSpreadPages(pageNum);
+            currentPage = leftPage;
+
+            const leftWrapper = document.getElementById('leftPageWrapper');
+            const rightWrapper = document.getElementById('rightPageWrapper');
+            const spineLine = document.getElementById('bookSpineLine');
+            const spreadWrapper = document.getElementById('bookSpreadWrapper');
+
+            // Animasi selak buku
+            if (spreadWrapper && direction) {
+                spreadWrapper.classList.remove('animate-flip-next', 'animate-flip-prev');
+                void spreadWrapper.offsetWidth;
+                spreadWrapper.classList.add(direction === 'next' ? 'animate-flip-next' : 'animate-flip-prev');
+            }
+
+            await renderSinglePdfPage(leftPage, 'pdfCanvasLeft');
+            document.getElementById('leftPageBadge').innerText = `M/S ${leftPage}`;
+
+            if (rightPage) {
+                rightWrapper.classList.remove('hidden');
+                rightWrapper.classList.add('flex');
+                spineLine.classList.remove('hidden');
+                leftWrapper.className = 'book-page-sheet book-page-left cursor-pointer group relative flex flex-col items-center justify-center bg-white';
+                await renderSinglePdfPage(rightPage, 'pdfCanvasRight');
+                document.getElementById('rightPageBadge').innerText = `M/S ${rightPage}`;
+                document.getElementById('currentPageNum').innerText = `${leftPage} - ${rightPage}`;
+            } else {
+                rightWrapper.classList.add('hidden');
+                rightWrapper.classList.remove('flex');
+                spineLine.classList.add('hidden');
+                leftWrapper.className = 'book-page-sheet book-page-single cursor-pointer group relative flex flex-col items-center justify-center bg-white';
+                document.getElementById('currentPageNum').innerText = `${leftPage}`;
+            }
+
+            // Kemas kini dropdown & butang navigasi
+            const select = document.getElementById('pageSelectDropdown');
+            if (select) {
+                if (select.querySelector(`option[value="${pageNum}"]`)) {
+                    select.value = pageNum;
+                } else if (select.querySelector(`option[value="${leftPage}"]`)) {
+                    select.value = leftPage;
+                } else if (rightPage && select.querySelector(`option[value="${rightPage}"]`)) {
+                    select.value = rightPage;
+                }
+            }
+
+            document.getElementById('btnPrevBook').disabled = (leftPage <= 1);
+            document.getElementById('btnNextBook').disabled = (rightPage ? rightPage >= totalPdfPages : leftPage >= totalPdfPages);
+
+            isRenderingBook = false;
+        }
+
+        function prevBookPage() {
+            if (currentPage <= 1) return;
+            if (!isBookSpreadMode || window.innerWidth < 768) {
+                const prev = currentPage === 3 ? 1 : currentPage - 1;
+                renderBookPage(prev, 'prev');
+            } else {
+                const prev = currentPage <= 4 ? 1 : currentPage - 2;
+                renderBookPage(prev, 'prev');
+            }
+        }
+
+        function nextBookPage() {
+            if (!isBookSpreadMode || window.innerWidth < 768) {
+                if (currentPage >= totalPdfPages) return;
+                const next = currentPage === 1 ? 3 : currentPage + 1;
+                renderBookPage(next, 'next');
+            } else {
+                if (currentPage === 1) {
+                    renderBookPage(4, 'next');
+                } else if (currentPage + 2 <= totalPdfPages) {
+                    renderBookPage(currentPage + 2, 'next');
+                }
+            }
+        }
+
+        function jumpToBookPage(val) {
+            renderBookPage(parseInt(val, 10), 'next');
+        }
+
+        function toggleBookViewMode() {
+            isBookSpreadMode = !isBookSpreadMode;
+            const lbl = document.getElementById('bookModeLabel');
+            const icon = document.getElementById('bookModeIcon');
+            if (isBookSpreadMode) {
+                lbl.innerText = 'Mod Buku (2 Helaian)';
+                icon.className = 'fa-solid fa-book-open';
+            } else {
+                lbl.innerText = 'Mod 1 Helaian';
+                icon.className = 'fa-solid fa-file-lines';
+            }
+            renderBookPage(currentPage);
+        }
+
+        /* -------------------------------------------------------------
+           5. OTHER INTERACTIVE TOGGLES & MODALS
+        ------------------------------------------------------------- */
+        function switchLoginRole(role) {
+            const tabP = document.getElementById('tabPelajar');
+            const tabS = document.getElementById('tabStaf');
+            const lbl = document.getElementById('lblIdentity');
+
+            if (role === 'pelajar') {
+                tabP.className = 'py-2 rounded-lg text-xs font-bold transition-all text-white bg-blue-600 shadow-md';
+                tabS.className = 'py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white';
+                lbl.innerText = 'Emel / No. Matrik Pelajar';
+            } else {
+                tabS.className = 'py-2 rounded-lg text-xs font-bold transition-all text-white bg-blue-600 shadow-md';
+                tabP.className = 'py-2 rounded-lg text-xs font-bold transition-all text-slate-400 hover:text-white';
+                lbl.innerText = 'Emel Rasmi Staf / Pensyarah';
+            }
+        }
+
+        function switchGenderAttire(gender) {
+            const btnM = document.getElementById('btnGenderMale');
+            const btnF = document.getElementById('btnGenderFemale');
+            const panM = document.getElementById('panelMaleAttire');
+            const panF = document.getElementById('panelFemaleAttire');
+
+            if (gender === 'male') {
+                btnM.className = 'px-6 py-2.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md flex items-center gap-2';
+                btnF.className = 'px-6 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-2';
+                panM.classList.remove('hidden');
+                panF.classList.add('hidden');
+            } else {
+                btnF.className = 'px-6 py-2.5 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-md flex items-center gap-2';
+                btnM.className = 'px-6 py-2.5 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex items-center gap-2';
+                panF.classList.remove('hidden');
+                panM.classList.add('hidden');
+            }
+        }
+
+        function openFlowchartStep(step) {
+            const modal = document.getElementById('flowchartModal');
+            const badge = document.getElementById('modalStepBadge');
+            const title = document.getElementById('modalStepTitle');
+            const desc = document.getElementById('modalStepDesc');
+
+            const stepsData = {
+                1: { title: "1. Aduan & Siasatan Awal", desc: "Aduan bertulis diterima oleh Pegawai Pembangunan Pelajar. Pegawai menyiasat bukti awal dan mengumpul kenyataan bertulis daripada saksi." },
+                2: { title: "2. Penentuan Prima Facie & Surat Pertuduhan", desc: "Jika terdapat kes prima facie, Surat Pertuduhan Rasmi dikeluarkan. Pelajar diberi tempoh 14 hari untuk menjawab pertuduhan secara bertulis." },
+                3: { title: "3. Sidang Perbicaraan JTP (Akta 174)", desc: "Perbicaraan dihadiri Jawatankuasa Tatatertib Pelajar. Pelajar dibenarkan membela diri dan mengemukakan saksi/bukti." },
+                4: { title: "4. Keputusan & Pelaksanaan Hukuman", desc: "Keputusan dibacakan. Hukuman meliputi Denda RM30, Amaran Bertulis, Gantung Pengajian, atau Pembuangan Kolej." },
+                5: { title: "5. Hak Rayuan Ke JPPKK / Menteri", desc: "Pelajar yang tidak berpuas hati berhak mengemukakan rayuan bertulis dalam masa 14 hari kepada Ketua Pengarah JPPKK." }
+            };
+
+            badge.innerText = '0' + step;
+            title.innerText = stepsData[step].title;
+            desc.innerText = stepsData[step].desc;
+            modal.classList.remove('hidden');
+        }
+
+        function closeFlowchartModal() {
+            document.getElementById('flowchartModal').classList.add('hidden');
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('loginPassword');
+            const icon = document.getElementById('eyeIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-regular fa-eye';
+            }
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            showToast('Log Masuk Berjaya! Mengalih ke Dashboard Pelajar...', 'success');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border text-xs font-bold shadow-2xl transition-all transform translate-y-2 ${
+                type === 'success' ? 'bg-emerald-950/90 border-emerald-500 text-emerald-300' : 'bg-slate-900/90 border-cyan-500 text-cyan-300'
+            }`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check text-emerald-400' : 'fa-circle-info text-cyan-400'} text-base"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* -------------------------------------------------------------
+           6. LAGU KOLEJ KOMUNITI (YouTube: jowLcJZMmR0)
+        ------------------------------------------------------------- */
+        const SONG_YOUTUBE_ID = 'jowLcJZMmR0';
+        const SONG_YOUTUBE_URL = 'https://youtu.be/jowLcJZMmR0?si=3yeaBy45dmAigIrI';
+        let ytPlayer = null;
+        let ytReady = false;
+        let isPlayingAudio = false;
+        let audioInterval;
+        let activeLyricIndex = -1;
+
+        // Muat turun YouTube IFrame API
+        (function loadYouTubeApi() {
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            document.head.appendChild(tag);
+        })();
+
+        function onYouTubeIframeAPIReady() {
+            ytPlayer = new YT.Player('ytSongPlayer', {
+                height: '90',
+                width: '160',
+                videoId: SONG_YOUTUBE_ID,
+                playerVars: { playsinline: 1, rel: 0, controls: 0 },
+                events: {
+                    onReady: () => { ytReady = true; },
+                    onStateChange: onSongStateChange,
+                    onError: () => {
+                        showToast('Lagu tidak dapat dimainkan di sini. Membuka YouTube...', 'info');
+                        setSongUiPlaying(false);
+                        window.open(SONG_YOUTUBE_URL, '_blank');
+                    }
+                }
+            });
+        }
+
+        function fmtTime(sec) {
+            sec = Math.max(0, Math.floor(sec || 0));
+            const m = Math.floor(sec / 60), s = sec % 60;
+            return `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+        }
+
+        function resetLyricsHighlight() {
+            activeLyricIndex = -1;
+            const lines = document.querySelectorAll('#lyricsContainer .lyric-line');
+            lines.forEach(el => {
+                el.className = 'lyric-line transition-all duration-300';
+            });
+            const container = document.getElementById('lyricsContainer');
+            if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setSongUiPlaying(playing) {
+            isPlayingAudio = playing;
+            document.getElementById('playAudioIcon').className = playing ? 'fa-solid fa-pause' : 'fa-solid fa-play';
+            clearInterval(audioInterval);
+            if (playing) {
+                updateSongProgress();
+                audioInterval = setInterval(updateSongProgress, 250);
+            }
+        }
+
+        function updateSongProgress() {
+            if (!ytReady || !ytPlayer || !ytPlayer.getCurrentTime) return;
+            const cur = ytPlayer.getCurrentTime();
+            const dur = ytPlayer.getDuration();
+            document.getElementById('audioTimer').innerText = `${fmtTime(cur)} / ${fmtTime(dur)}`;
+
+            const lines = document.querySelectorAll('#lyricsContainer .lyric-line');
+            let newIdx = -1;
+            lines.forEach((el, i) => {
+                const start = parseFloat(el.dataset.start || 0);
+                const end = parseFloat(el.dataset.end || 999);
+                if (cur >= start && cur < end) {
+                    newIdx = i;
+                }
+            });
+
+            if (newIdx !== activeLyricIndex) {
+                activeLyricIndex = newIdx;
+                lines.forEach((el, i) => {
+                    if (i === activeLyricIndex) {
+                        el.className = 'lyric-line transition-all duration-300 text-amber-400 font-bold scale-105';
+                    } else {
+                        el.className = 'lyric-line transition-all duration-300';
+                    }
+                });
+
+                const container = document.getElementById('lyricsContainer');
+                const activeEl = lines[activeLyricIndex];
+                if (container && activeEl) {
+                    const targetScroll = activeEl.offsetTop - container.offsetTop - (container.clientHeight / 2) + (activeEl.clientHeight / 2);
+                    container.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' });
+                }
+            }
+        }
+
+        function onSongStateChange(e) {
+            if (e.data === YT.PlayerState.ENDED) {
+                setSongUiPlaying(false);
+                resetLyricsHighlight();
+                document.getElementById('audioTimer').innerText = '00:00 / ' + fmtTime(ytPlayer.getDuration());
+            } else if (e.data === YT.PlayerState.PLAYING) {
+                setSongUiPlaying(true);
+            } else if (e.data === YT.PlayerState.PAUSED) {
+                setSongUiPlaying(false);
+            }
+        }
+
+        function toggleSimulatedAudio() {
+            if (!ytReady || !ytPlayer) {
+                showToast('Pemain lagu sedang dimuatkan, sila cuba sebentar lagi...', 'info');
+                return;
+            }
+            if (!isPlayingAudio) {
+                showToast('Memainkan Lagu Rasmi Kolej Komuniti...', 'info');
+                ytPlayer.playVideo();
+            } else {
+                ytPlayer.pauseVideo();
+            }
+        }
+
+        /* -------------------------------------------------------------
+           7. ANIMASI INTRO & ELEMEN NAIK DARI LIF / GARISAN PEMISAH
+        ------------------------------------------------------------- */
+        function replayHeroIntroAnimation() {
+            const items = document.querySelectorAll('#hero .lift-item, #hero .lift-divider-line, #hero .lift-mask, #hero .lift-mask-block');
+            items.forEach(el => {
+                el.style.animation = 'none';
+                void el.offsetHeight;
+                el.style.animation = '';
+            });
+        }
+
+        function initElevatorRevealAnimations() {
+            // Pilih semua tajuk seksyen, lencana, sub-tajuk & kad di seluruh halaman (selain #hero)
+            const targets = document.querySelectorAll(
+                'section:not(#hero) h2, section:not(#hero) h3, section:not(#hero) > div > p, section:not(#hero) .text-center > p, section:not(#hero) .text-center > div.inline-flex'
+            );
+
+            targets.forEach((el, idx) => {
+                if (el.closest('.scroll-lift-mask')) return;
+                const mask = document.createElement('div');
+                mask.className = 'scroll-lift-mask';
+                el.parentNode.insertBefore(mask, el);
+                mask.appendChild(el);
+                el.classList.add('scroll-lift-item');
+                el.style.setProperty('--scroll-delay', `${(idx % 3) * 0.12}s`);
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+            document.querySelectorAll('.scroll-lift-mask').forEach(mask => observer.observe(mask));
+
+            // Mainkan semula animasi intro apabila kembali ke bahagian atas (#hero)
+            const heroSection = document.getElementById('hero');
+            if (heroSection) {
+                let heroWasOut = false;
+                const heroObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (!entry.isIntersecting) {
+                            heroWasOut = true;
+                        } else if (heroWasOut) {
+                            heroWasOut = false;
+                            replayHeroIntroAnimation();
+                        }
+                    });
+                }, { threshold: 0.25 });
+                heroObserver.observe(heroSection);
+            }
+        }
+
+        // Initialize default view on load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderRuleCards(rulesDatabase);
+            initPdfBookReader();
+            initElevatorRevealAnimations();
+        });
+    </script>
+</body>
+</html>
