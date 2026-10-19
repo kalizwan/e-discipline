@@ -15,6 +15,7 @@ import LecturerDashboard from './pages/LecturerDashboard';
 import StudentDashboard from './pages/StudentDashboard';
 
 import { initialUsers, initialCases, initialAppeals, initialCollegeRules, DEFAULT_AVATAR } from './data/mockData';
+import { supabase } from './supabaseClient';
 
 function AppInner() {
   const { addToast } = useToast();
@@ -94,6 +95,57 @@ function AppInner() {
   const [isRulesOpen, setIsRulesOpen] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
   const [showPortal, setShowPortal] = useState(true);
+
+  // ── Supabase Initial Fetch & Sync ──
+  useEffect(() => {
+    async function loadSupabaseData() {
+      try {
+        const { data: dbUsers, error: uErr } = await supabase.from('users').select('*');
+        if (!uErr && dbUsers && dbUsers.length > 0) {
+          setUsers(sanitizeUsers(dbUsers));
+        } else if (!uErr && (!dbUsers || dbUsers.length === 0)) {
+          // Auto-seed initial users to Supabase if empty
+          const seedUsers = initialUsers.map(u => ({
+            id: u.id,
+            role: u.role,
+            name: u.name,
+            email: u.email || null,
+            password: u.password || null,
+            matrixNo: u.matrixNo || null,
+            icNo: u.icNo || null,
+            gender: u.gender || null,
+            course: u.course || null,
+            courseCode: u.courseCode || null,
+            semester: u.semester || null,
+            intakeYear: u.intakeYear || null,
+            tahunMasuk: u.tahunMasuk || null,
+            sesi: u.sesi || null,
+            phone: u.phone || null,
+            serviceDuration: u.serviceDuration || null,
+            department: u.department || null,
+            meritPoints: u.meritPoints || 0,
+            demeritPoints: u.demeritPoints || 0,
+            status: u.status || 'Baik',
+            avatar: u.avatar || DEFAULT_AVATAR
+          }));
+          await supabase.from('users').upsert(seedUsers);
+        }
+
+        const { data: dbCases, error: cErr } = await supabase.from('cases').select('*');
+        if (!cErr && dbCases && dbCases.length > 0) {
+          setCases(assignSequentialCaseIds(dbCases));
+        }
+
+        const { data: dbAppeals, error: aErr } = await supabase.from('appeals').select('*');
+        if (!aErr && dbAppeals && dbAppeals.length > 0) {
+          setAppeals(dbAppeals);
+        }
+      } catch (err) {
+        console.warn('Supabase offline or table pending, fallback to local:', err);
+      }
+    }
+    loadSupabaseData();
+  }, []);
 
   // LocalStorage sync
   useEffect(() => {
@@ -195,11 +247,11 @@ function AppInner() {
     return { success: true };
   };
 
-  const handleRegisterStudent = ({ matrixNo, icNo, password, name, gender, course, courseCode, semester, intakeYear }) => {
+  const handleRegisterStudent = async ({ matrixNo, icNo, password, name, gender, course, courseCode, semester, intakeYear }) => {
     if (users.find(u => u.matrixNo?.trim().toUpperCase() === matrixNo?.trim().toUpperCase())) {
       return { success: false, message: 'Sila masukkan kad matrik baharu' };
     }
-    setUsers(prev => [...prev, {
+    const newStudent = {
       id: `stud-${Date.now()}`,
       role: 'student',
       matrixNo,
@@ -216,7 +268,13 @@ function AppInner() {
       demeritPoints: 0,
       status: 'Baik',
       avatar: DEFAULT_AVATAR
-    }]);
+    };
+    setUsers(prev => [...prev, newStudent]);
+    try {
+      await supabase.from('users').insert([newStudent]);
+    } catch (e) {
+      console.warn('Supabase insert user error:', e);
+    }
     addToast({ type: 'success', title: 'Akaun Pelajar Dicipta', message: `${name} (${matrixNo}) berjaya didaftarkan.` });
     return { success: true };
   };
@@ -224,45 +282,63 @@ function AppInner() {
   const handleApproveStaff = (staffId) => {
     const s = users.find(u => u.id === staffId);
     setUsers(prev => prev.map(u => u.id === staffId ? { ...u, status: 'approved' } : u));
+    supabase.from('users').update({ status: 'approved' }).eq('id', staffId).then();
     addToast({ type: 'success', title: 'Staf Diluluskan', message: `${s?.name} kini aktif.` });
   };
 
   const handleRejectStaff = (staffId) => {
     const s = users.find(u => u.id === staffId);
     setUsers(prev => prev.filter(u => u.id !== staffId));
+    supabase.from('users').delete().eq('id', staffId).then();
     addToast({ type: 'danger', title: 'Permohonan Ditolak', message: `Permohonan ${s?.name} dipadam.` });
   };
 
-  const handleSubmitCase = (caseData) => {
-    setCases(prev => {
-      const normalizedPrev = assignSequentialCaseIds(prev);
-      const nextNum = normalizedPrev.length + 1;
-      const formattedId = `CASE-${String(nextNum).padStart(3, '0')}`;
-      const newCase = {
-        id: formattedId,
-        ...caseData,
-        status: 'Dalam Siasatan',
-        timestamp: caseData.timestamp || new Date().toISOString(),
-      };
-      return [newCase, ...normalizedPrev];
-    });
+  const handleSubmitCase = async (caseData) => {
+    const normalizedPrev = assignSequentialCaseIds(cases);
+    const nextNum = normalizedPrev.length + 1;
+    const formattedId = `CASE-${String(nextNum).padStart(3, '0')}`;
+    const newCase = {
+      id: formattedId,
+      ...caseData,
+      status: 'Dalam Siasatan',
+      timestamp: caseData.timestamp || new Date().toISOString(),
+    };
+
+    setCases(prev => [newCase, ...assignSequentialCaseIds(prev)]);
+
     setUsers(prev => prev.map(u => {
       if (u.matrixNo === caseData.studentMatrix) {
         const nd = u.demeritPoints + (caseData.demeritPoints || 0);
-        return { ...u, demeritPoints: nd, status: nd >= 50 ? 'Tatatertib' : nd >= 30 ? 'Amaran' : 'Baik' };
+        const updated = { ...u, demeritPoints: nd, status: nd >= 50 ? 'Tatatertib' : nd >= 30 ? 'Amaran' : 'Baik' };
+        supabase.from('users').update({ demeritPoints: nd, status: updated.status }).eq('matrixNo', u.matrixNo).then();
+        return updated;
       }
       return u;
     }));
+
+    try {
+      await supabase.from('cases').insert([newCase]);
+    } catch (e) {
+      console.warn('Supabase insert case error:', e);
+    }
+
     addToast({ type: 'warning', title: 'Kes Dilaporkan', message: `Status: Dalam Siasatan` });
   };
 
   const handleUpdateCaseStatus = (caseId, newStatus) => {
     setCases(prev => prev.map(c => c.id === caseId ? { ...c, status: newStatus } : c));
+    supabase.from('cases').update({ status: newStatus }).eq('id', caseId).then();
     addToast({ type: 'info', title: 'Status Dikemas Kini', message: `${caseId} → ${newStatus}` });
   };
 
-  const handleSubmitAppeal = (appealData) => {
-    setAppeals(prev => [{ id: `APP-${Math.floor(500 + Math.random() * 500)}`, ...appealData, status: 'Pending' }, ...prev]);
+  const handleSubmitAppeal = async (appealData) => {
+    const newAppeal = { id: `APP-${Math.floor(500 + Math.random() * 500)}`, ...appealData, status: 'Pending' };
+    setAppeals(prev => [newAppeal, ...prev]);
+    try {
+      await supabase.from('appeals').insert([newAppeal]);
+    } catch (e) {
+      console.warn('Supabase insert appeal error:', e);
+    }
     addToast({ type: 'info', title: 'Rayuan Dihantar', message: 'Menunggu semakan Admin.' });
   };
 
@@ -270,10 +346,14 @@ function AppInner() {
     const app = appeals.find(a => a.id === appealId);
     if (!app) return;
     setAppeals(prev => prev.map(a => a.id === appealId ? { ...a, status: 'Approved' } : a));
+    supabase.from('appeals').update({ status: 'Approved' }).eq('id', appealId).then();
+
     setUsers(prev => prev.map(u => {
       if (u.matrixNo === app.studentMatrix) {
         const rd = Math.max(0, u.demeritPoints - 15);
-        return { ...u, demeritPoints: rd, status: rd < 30 ? 'Baik' : 'Amaran' };
+        const updated = { ...u, demeritPoints: rd, status: rd < 30 ? 'Baik' : 'Amaran' };
+        supabase.from('users').update({ demeritPoints: rd, status: updated.status }).eq('matrixNo', u.matrixNo).then();
+        return updated;
       }
       return u;
     }));
@@ -283,6 +363,7 @@ function AppInner() {
   const handleRejectAppeal = (appealId) => {
     const app = appeals.find(a => a.id === appealId);
     setAppeals(prev => prev.map(a => a.id === appealId ? { ...a, status: 'Rejected' } : a));
+    supabase.from('appeals').update({ status: 'Rejected' }).eq('id', appealId).then();
     addToast({ type: 'danger', title: 'Rayuan Ditolak', message: `Rayuan ${app?.studentName} ditolak.` });
   };
 
