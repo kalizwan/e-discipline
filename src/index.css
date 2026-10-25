@@ -1592,28 +1592,151 @@ body {
 .course-badge-SKU { background: rgba(139,92,246,0.2); color: #a78bfa; border: 1px solid rgba(139,92,246,0.4); }
 
 /* =====================================================
-   Mobile Responsive — Sidebar
+   Mobile Responsive — Sidebar & App Layout
    ===================================================== */
+.header-hamburger-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  padding: 0.35rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-right: 0.25rem;
+}
+
+.header-hamburger-btn:hover {
+  background: rgba(37, 99, 235, 0.2);
+  color: #60a5fa;
+}
+
 @media (max-width: 768px) {
+  .header-hamburger-btn {
+    display: inline-flex;
+  }
+
+  .sidebar-hamburger {
+    display: none !important;
+  }
+
   .sidebar:not(.sidebar-mobile) {
-    display: none;
+    display: none !important;
   }
 
   .sidebar.sidebar-mobile {
-    display: flex;
+    display: flex !important;
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    left: -290px;
+    width: 270px !important;
+    height: calc(100vh - 64px);
+    z-index: 500;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
+  }
+
+  .sidebar.sidebar-mobile.open {
+    left: 0 !important;
   }
 
   .sidebar-mobile-overlay {
     display: block;
+    position: fixed;
+    inset: 0;
+    top: 64px;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 450;
   }
 
-  .sidebar-hamburger {
-    display: flex;
-  }
-
+  .app-main-junction,
   .app-main {
     margin-left: 0 !important;
-    padding-top: 4rem;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden;
+  }
+
+  .app-body-junction {
+    margin-top: 64px;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .top-header-junction {
+    padding: 0 0.75rem;
+    height: 64px;
+  }
+
+  .top-header-brand-sub {
+    display: none;
+  }
+
+  .top-header-brand-name {
+    font-size: 0.88rem;
+  }
+
+  .header-action-btn span {
+    display: none;
+  }
+
+  .theme-btn-text {
+    display: none;
+  }
+
+  .user-role-badge {
+    display: none;
+  }
+
+  .user-account-sub {
+    display: none;
+  }
+
+  .user-account-pill {
+    padding: 0.2rem 0.35rem;
+    gap: 0.4rem;
+  }
+
+  .user-account-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .user-account-name {
+    font-size: 0.76rem;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .logout-pill-btn {
+    padding: 0.25rem 0.55rem;
+    font-size: 0.7rem;
+  }
+
+  /* Table responsive wrapper */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    border-radius: var(--radius-sm);
+  }
+
+  .page-main,
+  main {
+    padding: 1rem 0.75rem 3rem !important;
+  }
+
+  .page-header {
+    padding: 1.1rem 1rem !important;
+  }
+
+  .page-title {
+    font-size: 1.25rem !important;
   }
 }
 

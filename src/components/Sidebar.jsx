@@ -32,9 +32,10 @@ export default function Sidebar({
   onSwitchRole,
   pendingStaffCount = 0,
   pendingAppealsCount = 0,
+  mobileOpen = false,
+  onCloseMobile = () => {},
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = currentRole === 'admin' ? ADMIN_NAV
     : currentRole === 'lecturer' ? LECTURER_NAV
@@ -50,18 +51,40 @@ export default function Sidebar({
 
   const handleNavClick = (id) => {
     onChangeTab(id);
-    setMobileOpen(false);
+    onCloseMobile();
   };
 
   const SidebarContent = () => (
     <div className="sidebar-inner">
       {/* ── Nav Items ── */}
       <nav className="sidebar-nav">
-        {!collapsed && (
-          <span className="sidebar-section-label" style={{ marginBottom: '0.4rem', marginTop: '0.2rem' }}>
-            {currentRole === 'admin' ? 'MENU ADMIN' : currentRole === 'lecturer' ? 'MENU STAF' : 'MENU PELAJAR'}
-          </span>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 0.5rem 0.4rem' }}>
+          {!collapsed && (
+            <span className="sidebar-section-label" style={{ margin: 0 }}>
+              {currentRole === 'admin' ? 'MENU ADMIN' : currentRole === 'lecturer' ? 'MENU STAF' : 'MENU PELAJAR'}
+            </span>
+          )}
+          {mobileOpen && (
+            <button
+              onClick={onCloseMobile}
+              style={{
+                background: 'rgba(239,68,68,0.15)',
+                border: '1px solid rgba(239,68,68,0.3)',
+                color: '#ef4444',
+                borderRadius: '6px',
+                padding: '0.2rem 0.4rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem',
+                fontSize: '0.72rem',
+                fontWeight: 700
+              }}
+            >
+              <X size={14} /> Tutup
+            </button>
+          )}
+        </div>
         {navItems.map(item => {
           const Icon = item.icon;
           const badge = getBadge(item.id);
@@ -92,7 +115,7 @@ export default function Sidebar({
       {/* ── Spacer ── */}
       <div style={{ flex: 1 }} />
 
-      {/* ── Collapse Toggle (desktop) ── */}
+      {/* ── Collapse Toggle (desktop only) ── */}
       <button
         className="sidebar-collapse-btn"
         onClick={() => setCollapsed(c => !c)}
@@ -105,20 +128,11 @@ export default function Sidebar({
 
   return (
     <>
-      {/* ── Mobile Hamburger Button ── */}
-      <button
-        className="sidebar-hamburger"
-        onClick={() => setMobileOpen(o => !o)}
-        aria-label="Buka menu"
-      >
-        {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-      </button>
-
       {/* ── Mobile Overlay ── */}
       {mobileOpen && (
         <div
           className="sidebar-mobile-overlay"
-          onClick={() => setMobileOpen(false)}
+          onClick={onCloseMobile}
         />
       )}
 

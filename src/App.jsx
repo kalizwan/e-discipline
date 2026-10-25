@@ -87,6 +87,7 @@ function AppInner() {
 
   // ── Active tab (lifted from AdminDashboard → App) ──
   const [adminActiveTab, setAdminActiveTab] = useState('dashboard');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // ── Modals ──
   const [isCreateStudentOpen, setIsCreateStudentOpen] = useState(false);
@@ -694,6 +695,8 @@ function AppInner() {
         onToggleTheme={() => setTheme(p => p === 'dark' ? 'light' : 'dark')}
         onOpenRules={() => setIsRulesOpen(true)}
         onOpenAdminProfile={() => setAdminActiveTab('admin-profile')}
+        onToggleMobileSidebar={() => setMobileMenuOpen(prev => !prev)}
+        mobileOpen={mobileMenuOpen}
       />
 
       <div className="app-body-junction">
@@ -706,6 +709,8 @@ function AppInner() {
           onSwitchRole={handleSwitchRole}
           pendingStaffCount={pendingStaffCount}
           pendingAppealsCount={pendingAppealsCount}
+          mobileOpen={mobileMenuOpen}
+          onCloseMobile={() => setMobileMenuOpen(false)}
         />
 
         {/* ── Main Content Area ── */}
