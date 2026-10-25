@@ -97,56 +97,141 @@ function AppInner() {
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
   const [showPortal, setShowPortal] = useState(true);
 
-  // ── Supabase Initial Fetch & Sync ──
-  useEffect(() => {
-    async function loadSupabaseData() {
-      try {
-        const { data: dbUsers, error: uErr } = await supabase.from('users').select('*');
-        if (!uErr && dbUsers && dbUsers.length > 0) {
-          setUsers(sanitizeUsers(dbUsers));
-        } else if (!uErr && (!dbUsers || dbUsers.length === 0)) {
-          // Auto-seed initial users to Supabase if empty
-          const seedUsers = initialUsers.map(u => ({
-            id: u.id,
-            role: u.role,
-            name: u.name,
-            email: u.email || null,
-            password: u.password || null,
-            matrixNo: u.matrixNo || null,
-            icNo: u.icNo || null,
-            gender: u.gender || null,
-            course: u.course || null,
-            courseCode: u.courseCode || null,
-            semester: u.semester || null,
-            intakeYear: u.intakeYear || null,
-            tahunMasuk: u.tahunMasuk || null,
-            sesi: u.sesi || null,
-            phone: u.phone || null,
-            serviceDuration: u.serviceDuration || null,
-            department: u.department || null,
-            meritPoints: u.meritPoints || 0,
-            demeritPoints: u.demeritPoints || 0,
-            status: u.status || 'Baik',
-            avatar: u.avatar || DEFAULT_AVATAR
-          }));
-          await supabase.from('users').upsert(seedUsers);
-        }
+  // ── Supabase Cloud Sync (data dikongsi antara laptop & telefon) ──
+  // Setiap rekod disimpan dalam jadual app_users / app_cases / app_appeals (id + data JSON)
+  const CLOUD_TABLES = { users: 'app_users', cases: 'app_cases', appeals: 'app_appeals' };
+  const cloudReadyRef = useRef(false);
+  const cloudErrorShownRef = useRef(false);
+  const syncedRef = useRef({ users: new Map(), cases: new Map(), appeals: new Map() });
+  const latestRef = useRef({ users, cases, appeals });
+  latestRef.current = { users, cases, appeals };
 
-        const { data: dbCases, error: cErr } = await supabase.from('cases').select('*');
-        if (!cErr && dbCases && dbCases.length > 0) {
-          setCases(assignSequentialCaseIds(dbCases));
-        }
+  const toRowMap = (list) => new Map((list || []).map(r => [r.id, JSON.stringify(r)]));
 
-        const { data: dbAppeals, error: aErr } = await supabase.from('appeals').select('*');
-        if (!aErr && dbAppeals && dbAppeals.length > 0) {
-          setAppeals(dbAppeals);
+  const fromCloudRows = (rows) => (rows || []).map(r => ({ ...r.data, id: r.id }));
+
+  const hasPendingLocalChanges = () => {
+    const cur = latestRef.current;
+    return ['users', 'cases', 'appeals'].some(key => {
+      const now = toRowMap(cur[key]);
+      const old = syncedRef.current[key];
+      if (now.size !== old.size) return true;
+      for (const [id, json] of now) if (old.get(id) !== json) return true;
+      return false;
+    });
+  };
+
+  const reportCloudError = (err) => {
+    console.error('Supabase sync error:', err);
+    if (!cloudErrorShownRef.current) {
+      cloudErrorShownRef.current = true;
+      addToast({ type: 'warning', title: 'Simpanan Awan Gagal', message: 'Data belum dapat disimpan ke Supabase. Semak jadual app_users / app_cases / app_appeals.' });
+    }
+  };
+
+  const pullFromCloud = async () => {
+    try {
+      const [uRes, cRes, aRes] = await Promise.all([
+        supabase.from(CLOUD_TABLES.users).select('id,data'),
+        supabase.from(CLOUD_TABLES.cases).select('id,data'),
+        supabase.from(CLOUD_TABLES.appeals).select('id,data'),
+      ]);
+      if (uRes.error || cRes.error || aRes.error) {
+        reportCloudError(uRes.error || cRes.error || aRes.error);
+        return false;
+      }
+
+      let dbUsers = fromCloudRows(uRes.data);
+      let dbCases = fromCloudRows(cRes.data);
+      let dbAppeals = fromCloudRows(aRes.data);
+
+      // Sekali sahaja bagi setiap peranti: hantar data tempatan yang belum ada di awan
+      if (!localStorage.getItem('jum_cloud_seeded_v2')) {
+        const local = latestRef.current;
+        const missing = (localList, dbList) => {
+          const ids = new Set(dbList.map(r => r.id));
+          return (localList || []).filter(r => r && r.id && !ids.has(r.id));
+        };
+        const toPush = {
+          users: missing(local.users.length ? local.users : initialUsers, dbUsers),
+          cases: missing(local.cases, dbCases),
+          appeals: missing(local.appeals, dbAppeals),
+        };
+        for (const key of ['users', 'cases', 'appeals']) {
+          if (toPush[key].length === 0) continue;
+          const { error } = await supabase
+            .from(CLOUD_TABLES[key])
+            .upsert(toPush[key].map(r => ({ id: r.id, data: r })));
+          if (error) { reportCloudError(error); return false; }
         }
-      } catch (err) {
-        console.warn('Supabase offline or table pending, fallback to local:', err);
+        dbUsers = [...dbUsers, ...toPush.users];
+        dbCases = [...dbCases, ...toPush.cases];
+        dbAppeals = [...dbAppeals, ...toPush.appeals];
+        localStorage.setItem('jum_cloud_seeded_v2', '1');
+      }
+
+      const nextUsers = sanitizeUsers(dbUsers.length ? dbUsers : initialUsers);
+      const nextCases = [...dbCases].sort((a, b) => new Date(b.timestamp || b.date || 0) - new Date(a.timestamp || a.date || 0));
+      const nextAppeals = dbAppeals;
+
+      syncedRef.current = {
+        users: toRowMap(nextUsers),
+        cases: toRowMap(nextCases),
+        appeals: toRowMap(nextAppeals),
+      };
+      setUsers(nextUsers);
+      setCases(nextCases);
+      setAppeals(nextAppeals);
+      cloudReadyRef.current = true;
+      return true;
+    } catch (err) {
+      console.warn('Supabase offline, guna data tempatan:', err);
+      return false;
+    }
+  };
+
+  const pushLocalChanges = async () => {
+    if (!cloudReadyRef.current) return;
+    const cur = latestRef.current;
+    for (const key of ['users', 'cases', 'appeals']) {
+      const now = toRowMap(cur[key]);
+      const old = syncedRef.current[key];
+      const changed = (cur[key] || []).filter(r => r && r.id && old.get(r.id) !== now.get(r.id));
+      const removedIds = [...old.keys()].filter(id => !now.has(id));
+
+      if (changed.length > 0) {
+        const { error } = await supabase
+          .from(CLOUD_TABLES[key])
+          .upsert(changed.map(r => ({ id: r.id, data: r })));
+        if (error) { reportCloudError(error); continue; }
+        changed.forEach(r => old.set(r.id, now.get(r.id)));
+      }
+      if (removedIds.length > 0) {
+        const { error } = await supabase.from(CLOUD_TABLES[key]).delete().in('id', removedIds);
+        if (error) { reportCloudError(error); continue; }
+        removedIds.forEach(id => old.delete(id));
       }
     }
-    loadSupabaseData();
+  };
+
+  // Tarik data dari awan semasa buka, kemudian segar semula setiap 15 saat & bila kembali ke tab/aplikasi
+  useEffect(() => {
+    pullFromCloud();
+    const refresh = () => {
+      if (document.visibilityState === 'hidden') return;
+      if (hasPendingLocalChanges()) return;
+      pullFromCloud();
+    };
+    const timer = setInterval(refresh, 15000);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', refresh);
+    };
   }, []);
+
+  // Simpan perubahan tempatan ke awan secara automatik
+  useEffect(() => { pushLocalChanges(); }, [users, cases, appeals]);
 
   // LocalStorage sync
   useEffect(() => {
@@ -271,11 +356,6 @@ function AppInner() {
       avatar: DEFAULT_AVATAR
     };
     setUsers(prev => [...prev, newStudent]);
-    try {
-      await supabase.from('users').insert([newStudent]);
-    } catch (e) {
-      console.warn('Supabase insert user error:', e);
-    }
     addToast({ type: 'success', title: 'Akaun Pelajar Dicipta', message: `${name} (${matrixNo}) berjaya didaftarkan.` });
     return { success: true };
   };
@@ -283,20 +363,18 @@ function AppInner() {
   const handleApproveStaff = (staffId) => {
     const s = users.find(u => u.id === staffId);
     setUsers(prev => prev.map(u => u.id === staffId ? { ...u, status: 'approved' } : u));
-    supabase.from('users').update({ status: 'approved' }).eq('id', staffId).then();
     addToast({ type: 'success', title: 'Staf Diluluskan', message: `${s?.name} kini aktif.` });
   };
 
   const handleRejectStaff = (staffId) => {
     const s = users.find(u => u.id === staffId);
     setUsers(prev => prev.filter(u => u.id !== staffId));
-    supabase.from('users').delete().eq('id', staffId).then();
     addToast({ type: 'danger', title: 'Permohonan Ditolak', message: `Permohonan ${s?.name} dipadam.` });
   };
 
   const handleSubmitCase = async (caseData) => {
-    const normalizedPrev = assignSequentialCaseIds(cases);
-    const nextNum = normalizedPrev.length + 1;
+    const maxCaseNum = cases.reduce((m, c) => { const n = parseInt(String(c.id || '').replace(/\D/g, ''), 10); return isNaN(n) ? m : Math.max(m, n); }, 0);
+    const nextNum = maxCaseNum + 1;
     const formattedId = `CASE-${String(nextNum).padStart(3, '0')}`;
     const newCase = {
       id: formattedId,
@@ -305,41 +383,28 @@ function AppInner() {
       timestamp: caseData.timestamp || new Date().toISOString(),
     };
 
-    setCases(prev => [newCase, ...assignSequentialCaseIds(prev)]);
+    setCases(prev => [newCase, ...prev]);
 
     setUsers(prev => prev.map(u => {
       if (u.matrixNo === caseData.studentMatrix) {
         const nd = u.demeritPoints + (caseData.demeritPoints || 0);
         const updated = { ...u, demeritPoints: nd, status: nd >= 50 ? 'Tatatertib' : nd >= 30 ? 'Amaran' : 'Baik' };
-        supabase.from('users').update({ demeritPoints: nd, status: updated.status }).eq('matrixNo', u.matrixNo).then();
         return updated;
       }
       return u;
     }));
-
-    try {
-      await supabase.from('cases').insert([newCase]);
-    } catch (e) {
-      console.warn('Supabase insert case error:', e);
-    }
 
     addToast({ type: 'warning', title: 'Kes Dilaporkan', message: `Status: Dalam Siasatan` });
   };
 
   const handleUpdateCaseStatus = (caseId, newStatus) => {
     setCases(prev => prev.map(c => c.id === caseId ? { ...c, status: newStatus } : c));
-    supabase.from('cases').update({ status: newStatus }).eq('id', caseId).then();
     addToast({ type: 'info', title: 'Status Dikemas Kini', message: `${caseId} → ${newStatus}` });
   };
 
   const handleSubmitAppeal = async (appealData) => {
-    const newAppeal = { id: `APP-${Math.floor(500 + Math.random() * 500)}`, ...appealData, status: 'Pending' };
+    const newAppeal = { id: `APP-${Date.now()}`, ...appealData, status: 'Pending' };
     setAppeals(prev => [newAppeal, ...prev]);
-    try {
-      await supabase.from('appeals').insert([newAppeal]);
-    } catch (e) {
-      console.warn('Supabase insert appeal error:', e);
-    }
     addToast({ type: 'info', title: 'Rayuan Dihantar', message: 'Menunggu semakan Admin.' });
   };
 
@@ -347,13 +412,11 @@ function AppInner() {
     const app = appeals.find(a => a.id === appealId);
     if (!app) return;
     setAppeals(prev => prev.map(a => a.id === appealId ? { ...a, status: 'Approved' } : a));
-    supabase.from('appeals').update({ status: 'Approved' }).eq('id', appealId).then();
 
     setUsers(prev => prev.map(u => {
       if (u.matrixNo === app.studentMatrix) {
         const rd = Math.max(0, u.demeritPoints - 15);
         const updated = { ...u, demeritPoints: rd, status: rd < 30 ? 'Baik' : 'Amaran' };
-        supabase.from('users').update({ demeritPoints: rd, status: updated.status }).eq('matrixNo', u.matrixNo).then();
         return updated;
       }
       return u;
@@ -364,7 +427,6 @@ function AppInner() {
   const handleRejectAppeal = (appealId) => {
     const app = appeals.find(a => a.id === appealId);
     setAppeals(prev => prev.map(a => a.id === appealId ? { ...a, status: 'Rejected' } : a));
-    supabase.from('appeals').update({ status: 'Rejected' }).eq('id', appealId).then();
     addToast({ type: 'danger', title: 'Rayuan Ditolak', message: `Rayuan ${app?.studentName} ditolak.` });
   };
 

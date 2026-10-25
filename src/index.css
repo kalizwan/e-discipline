@@ -2245,3 +2245,114 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .login-ambient span { animation: none; }
 }
+
+
+/* =====================================================
+   Mobile Fix v2 — Header kemas, boleh scroll ke tepi
+   ===================================================== */
+@media (max-width: 768px) {
+  .top-header-junction {
+    gap: 0.5rem;
+    padding: 0 0.6rem;
+    overflow: hidden;
+  }
+
+  .top-header-brand-junction {
+    flex-shrink: 0;
+    gap: 0.5rem;
+  }
+
+  .top-header-brand-junction img {
+    height: 30px !important;
+  }
+
+  /* Nama sistem disembunyikan di telefon supaya tidak bertindan */
+  .top-header-brand-text {
+    display: none;
+  }
+
+  /* Bahagian kanan: satu baris, boleh scroll ke tepi */
+  .top-header-right-junction {
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start;
+    gap: 0.45rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 0.2rem 0;
+  }
+
+  .top-header-right-junction::-webkit-scrollbar {
+    display: none;
+  }
+
+  .top-header-right-junction > * {
+    flex-shrink: 0;
+  }
+
+  .top-header-right-junction .btn {
+    white-space: nowrap;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .header-action-btn span {
+    display: inline !important;
+    font-size: 0.72rem;
+  }
+
+  .theme-btn-text {
+    display: none !important;
+  }
+
+  .user-account-pill {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+  }
+
+  .user-account-name {
+    max-width: 110px;
+  }
+
+  /* Kandungan utama: boleh scroll ke tepi bila ada bahagian lebar */
+  .app-body-junction {
+    overflow-x: visible;
+  }
+
+  .app-main-junction,
+  .app-main {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .app-main-junction main {
+    min-width: 0;
+  }
+
+  /* Kad statistik: 2 lajur, kad ganjil terakhir penuh lebar */
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem;
+  }
+
+  .stats-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  /* Jadual boleh diskrol ke tepi dengan jari */
+  .table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-container table {
+    min-width: 640px;
+  }
+
+  /* Elemen yang mungkin terlalu lebar */
+  .glass-panel {
+    max-width: 100%;
+  }
+}
