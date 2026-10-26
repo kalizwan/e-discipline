@@ -4,6 +4,7 @@ import {
   CheckCircle2, Edit3, Camera, Save, X, CreditCard, User, FileText
 } from 'lucide-react';
 import { COURSE_CODES, DEFAULT_AVATAR } from '../data/mockData';
+import { compressImageFile } from '../imageUtils';
 
 // ─────────────────────────────────────────────────────────────
 // Modal: Pelajar Edit Profil Sendiri (Ikut Admin Baharu)
@@ -51,11 +52,7 @@ function EditStudentProfileModal({ student, isOpen, onClose, onSave }) {
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setAvatar(ev.target.result);
-    };
-    reader.readAsDataURL(file);
+    compressImageFile(file, 320, 0.82).then(setAvatar).catch(() => {});
   };
 
   const handleSubmit = (e) => {

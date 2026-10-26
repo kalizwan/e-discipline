@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { compressImageFile } from '../imageUtils';
 import { 
   X, AlertTriangle, CheckCircle2, Camera, Trash2, MapPin, 
   Search, Clock, Calendar, Lock, User, ChevronDown, Check 
@@ -111,9 +112,7 @@ export default function ReportCaseModal({ isOpen, onClose, students = [], curren
       addToast({ type: 'warning', title: 'Fail Terlalu Besar', message: 'Sila pilih gambar kurang dari 5MB.' });
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (ev) => setEvidenceImage(ev.target.result);
-    reader.readAsDataURL(file);
+    compressImageFile(file, 1280, 0.8).then(setEvidenceImage).catch(() => {});
   };
 
   const handleRemoveImage = () => {

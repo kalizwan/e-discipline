@@ -17,6 +17,15 @@ import StudentDashboard from './pages/StudentDashboard';
 import { initialUsers, initialCases, initialAppeals, initialCollegeRules, DEFAULT_AVATAR } from './data/mockData';
 import { supabase } from './supabaseClient';
 
+// Simpan ke localStorage tanpa menjatuhkan aplikasi jika storan telefon penuh
+function safeLocalSet(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (err) {
+    console.warn('localStorage penuh, data hanya disimpan di awan:', err);
+  }
+}
+
 function AppInner() {
   const { addToast } = useToast();
 
@@ -247,9 +256,9 @@ function AppInner() {
         : prev
     );
   }, []);
-  useEffect(() => { localStorage.setItem('jum_users', JSON.stringify(users)); }, [users]);
-  useEffect(() => { localStorage.setItem('jum_cases', JSON.stringify(cases)); }, [cases]);
-  useEffect(() => { localStorage.setItem('jum_appeals', JSON.stringify(appeals)); }, [appeals]);
+  useEffect(() => { safeLocalSet('jum_users', users); }, [users]);
+  useEffect(() => { safeLocalSet('jum_cases', cases); }, [cases]);
+  useEffect(() => { safeLocalSet('jum_appeals', appeals); }, [appeals]);
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('jum_theme', theme);
@@ -333,7 +342,7 @@ function AppInner() {
     return { success: true };
   };
 
-  const handleRegisterStudent = async ({ matrixNo, icNo, password, name, gender, course, courseCode, semester, intakeYear }) => {
+  const handleRegisterStudent = ({ matrixNo, icNo, password, name, gender, course, courseCode, semester, intakeYear }) => {
     if (users.find(u => u.matrixNo?.trim().toUpperCase() === matrixNo?.trim().toUpperCase())) {
       return { success: false, message: 'Sila masukkan kad matrik baharu' };
     }

@@ -8,6 +8,7 @@ import {
   Trash2, Briefcase
 } from 'lucide-react';
 import { COURSE_CODES, DEFAULT_AVATAR } from '../data/mockData';
+import { compressImageFile } from '../imageUtils';
 
 // ─────────────────────────────────────────────────────────────
 // Helpers
@@ -860,11 +861,7 @@ function EditStudentModal({ student, isOpen, onClose, onSave }) {
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setAvatar(ev.target.result);
-    };
-    reader.readAsDataURL(file);
+    compressImageFile(file, 320, 0.82).then(setAvatar).catch(() => {});
   };
 
   const handleSubmit = (e) => {
@@ -1063,11 +1060,7 @@ function CreateStaffModal({ isOpen, onClose, onCreateStaff }) {
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setAvatar(ev.target.result);
-    };
-    reader.readAsDataURL(file);
+    compressImageFile(file, 320, 0.82).then(setAvatar).catch(() => {});
   };
 
   const handleSubmit = (e) => {
@@ -1342,11 +1335,7 @@ function EditStaffModal({ staff, isOpen, onClose, onSave }) {
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setAvatar(ev.target.result);
-    };
-    reader.readAsDataURL(file);
+    compressImageFile(file, 320, 0.82).then(setAvatar).catch(() => {});
   };
 
   const handleSubmit = (e) => {
@@ -2264,11 +2253,7 @@ function AdminProfileTab({ currentUser, onUpdateUserProfile }) {
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setAvatar(ev.target.result);
-    };
-    reader.readAsDataURL(file);
+    compressImageFile(file, 320, 0.82).then(setAvatar).catch(() => {});
   };
 
   const handleSubmit = (e) => {
