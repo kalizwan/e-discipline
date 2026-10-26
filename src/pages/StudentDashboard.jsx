@@ -60,20 +60,21 @@ function EditStudentProfileModal({ student, isOpen, onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const courseFullName = COURSE_CODES[courseCode]?.fullName || student.course;
+    const courseFullName = student.course;
     onSave({
       ...student,
       name,
       matrixNo,
       icNo,
-      password,
+      // Medan berkunci: sentiasa kekalkan nilai asal pelajar (tidak boleh diubah sendiri)
+      password: student.password,
       gender,
-      courseCode,
+      courseCode: student.courseCode,
       course: courseFullName,
-      semester,
-      intakeYear,
-      tahunMasuk: intakeYear,
-      sesi,
+      semester: student.semester,
+      intakeYear: student.intakeYear,
+      tahunMasuk: student.tahunMasuk ?? student.intakeYear,
+      sesi: student.sesi,
       phone,
       email,
       avatar,
@@ -166,7 +167,7 @@ function EditStudentProfileModal({ student, isOpen, onClose, onSave }) {
             {/* Tahun Mula Masuk */}
             <div>
               <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--primary)', marginBottom: '0.3rem', display: 'block' }}>
-                📅 Tahun Mula Masuk / Kemasukan *
+                📅 Tahun Mula Masuk / Kemasukan 🔒
               </label>
               <input
                 type="number"
@@ -175,15 +176,15 @@ function EditStudentProfileModal({ student, isOpen, onClose, onSave }) {
                 className="form-input"
                 placeholder="Cth: 2026"
                 value={intakeYear}
-                onChange={e => setIntakeYear(e.target.value)}
+                disabled readOnly style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}
                 required
               />
             </div>
 
             {/* Sesi Kemasukan */}
             <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>🎓 Sesi Kemasukan *</label>
-              <select className="form-select" value={sesi} onChange={e => setSesi(e.target.value)}>
+              <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>🎓 Sesi Kemasukan 🔒</label>
+              <select className="form-select" value={sesi} disabled readOnly style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}>
                 <option value="Sesi I (Julai - Disember)">Sesi I (Julai - Disember)</option>
                 <option value="Sesi II (Januari - Jun)">Sesi II (Januari - Jun)</option>
               </select>
@@ -202,13 +203,13 @@ function EditStudentProfileModal({ student, isOpen, onClose, onSave }) {
             </div>
 
             <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>Kata Laluan (Password) *</label>
-              <input type="text" className="form-input" value={password} onChange={e => setPassword(e.target.value)} required />
+              <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>Kata Laluan (Password) 🔒</label>
+              <input type="text" className="form-input" value={password} disabled readOnly style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }} />
             </div>
 
             <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>Program / Kursus *</label>
-              <select className="form-select" value={courseCode} onChange={e => setCourseCode(e.target.value)}>
+              <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>Program / Kursus 🔒</label>
+              <select className="form-select" value={courseCode} disabled readOnly style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}>
                 {Object.entries(COURSE_CODES).map(([code, info]) => (
                   <option key={code} value={code}>{code} — {info.fullName}</option>
                 ))}
@@ -216,8 +217,8 @@ function EditStudentProfileModal({ student, isOpen, onClose, onSave }) {
             </div>
 
             <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>Semester (Kolej Komuniti Tawau) *</label>
-              <select className="form-select" value={semester} onChange={e => setSemester(e.target.value)}>
+              <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>Semester (Kolej Komuniti Tawau) 🔒</label>
+              <select className="form-select" value={semester} disabled readOnly style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}>
                 <option value="Semester 1">Semester 1</option>
                 <option value="Semester 2">Semester 2</option>
                 <option value="Semester 3">Semester 3</option>
