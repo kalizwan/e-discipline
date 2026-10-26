@@ -90,12 +90,32 @@ function AppInner() {
 
   const [rules] = useState(initialCollegeRules);
 
-  // Wajib masuk page login dahulu secara default
-  const [currentRole, setCurrentRole] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
+  // ── Sesi Log Masuk Berterusan (Persistent Session) ──
+  // Sekiranya belum login, refresh akan terkeluar di page awal portal.
+  // Sekiranya sudah login, refresh atau reset data akan KEKAL di page/tab tersebut.
+  // Mesti tekan 'Log Keluar' baru keluar betul-betul ke page awal portal.
+  const [currentRole, setCurrentRole] = useState(() => localStorage.getItem('jum_auth_role') || null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const savedRole = localStorage.getItem('jum_auth_role');
+    const savedId = localStorage.getItem('jum_auth_user_id');
+    const savedMatrix = localStorage.getItem('jum_auth_user_matrix');
+    if (!savedRole || (!savedId && !savedMatrix)) return null;
 
-  // ── Active tab (lifted from AdminDashboard → App) ──
-  const [adminActiveTab, setAdminActiveTab] = useState('dashboard');
+    try {
+      const savedUsers = localStorage.getItem('jum_users');
+      const userPool = savedUsers ? JSON.parse(savedUsers) : initialUsers;
+      const match = userPool.find(u =>
+        (savedId && u.id === savedId) ||
+        (savedMatrix && u.matrixNo && u.matrixNo.trim().toUpperCase() === savedMatrix.trim().toUpperCase())
+      ) || userPool.find(u => u.role === savedRole);
+      return match || null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  // ── Active tab (Kekal pada tab semasa biarpun di-refresh atau reset data) ──
+  const [adminActiveTab, setAdminActiveTab] = useState(() => localStorage.getItem('jum_active_tab') || 'dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // ── Modals ──
@@ -104,7 +124,7 @@ function AppInner() {
   const [isAppealOpen, setIsAppealOpen] = useState(false);
   const [isRulesOpen, setIsRulesOpen] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
-  const [showPortal, setShowPortal] = useState(true);
+  const [showPortal, setShowPortal] = useState(() => !localStorage.getItem('jum_auth_role'));
 
   // ── Supabase Cloud Sync (data dikongsi antara laptop & telefon) ──
   // Setiap rekod disimpan dalam jadual app_users / app_cases / app_appeals (id + data JSON)
@@ -259,6 +279,19 @@ function AppInner() {
   useEffect(() => { safeLocalSet('jum_users', users); }, [users]);
   useEffect(() => { safeLocalSet('jum_cases', cases); }, [cases]);
   useEffect(() => { safeLocalSet('jum_appeals', appeals); }, [appeals]);
+
+  // Live Sync: Pastikan maklumat currentUser sentiasa segerak dengan rekod pengguna terkini
+  useEffect(() => {
+    if (currentUser) {
+      const freshUser = users.find(u =>
+        (u.id && currentUser.id && u.id === currentUser.id) ||
+        (u.matrixNo && currentUser.matrixNo && u.matrixNo.trim().toUpperCase() === currentUser.matrixNo.trim().toUpperCase())
+      );
+      if (freshUser && JSON.stringify(freshUser) !== JSON.stringify(currentUser)) {
+        setCurrentUser(freshUser);
+      }
+    }
+  }, [users, currentUser]);
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('jum_theme', theme);
@@ -303,6 +336,10 @@ function AppInner() {
       setCurrentUser(adminFound);
       setCurrentRole('admin');
       setAdminActiveTab('dashboard');
+      setShowPortal(false);
+      localStorage.setItem('jum_auth_user_id', adminFound.id);
+      localStorage.setItem('jum_auth_role', 'admin');
+      localStorage.setItem('jum_active_tab', 'dashboard');
       addToast({ type: 'success', title: 'Log Masuk Admin', message: `Selamat datang, ${adminFound.name}!` });
       return { success: true };
     }
@@ -316,6 +353,10 @@ function AppInner() {
       setCurrentUser(lecturerFound);
       setCurrentRole('lecturer');
       setAdminActiveTab('lecturer-home');
+      setShowPortal(false);
+      localStorage.setItem('jum_auth_user_id', lecturerFound.id);
+      localStorage.setItem('jum_auth_role', 'lecturer');
+      localStorage.setItem('jum_active_tab', 'lecturer-home');
       addToast({ type: 'success', title: 'Log Masuk Pensyarah', message: `Selamat datang, ${lecturerFound.name}!` });
       return { success: true };
     }
@@ -328,6 +369,10 @@ function AppInner() {
     if (studentFound) {
       setCurrentUser(studentFound);
       setCurrentRole('student');
+      setShowPortal(false);
+      localStorage.setItem('jum_auth_user_id', studentFound.id);
+      if (studentFound.matrixNo) localStorage.setItem('jum_auth_user_matrix', studentFound.matrixNo);
+      localStorage.setItem('jum_auth_role', 'student');
       addToast({ type: 'success', title: 'Log Masuk Pelajar', message: `Selamat datang, ${studentFound.name}!` });
       return { success: true };
     }
@@ -445,14 +490,49 @@ function AppInner() {
     localStorage.setItem('jum_cases', JSON.stringify(initialCases));
     localStorage.setItem('jum_appeals', JSON.stringify(initialAppeals));
     setCurrentUser(initialUsers[0]); setCurrentRole('admin');
-    setAdminActiveTab('dashboard'); setIsResetConfirmOpen(false);
+    setIsResetConfirmOpen(false);
     addToast({ type: 'warning', title: 'Data Direset', message: 'Semua data kembali ke asal.' });
   };
 
   const handleUpdateStudent = (updatedStudent) => {
+    const existing = users.find(u => u.id === updatedStudent.id);
+    const oldMatrix = existing?.matrixNo?.trim().toUpperCase();
+    const newMatrix = updatedStudent.matrixNo?.trim().toUpperCase();
+
+    // 1. Kemas kini senarai users
     setUsers(prev => prev.map(u => u.id === updatedStudent.id ? updatedStudent : u));
-    addToast({ type: 'success', title: 'Kemas Kini Akaun Pelajar', message: `Maklumat ${updatedStudent.name} (${updatedStudent.matrixNo}) berjaya disimpan.` });
+
+    // 2. Kemas kini currentUser jika pengguna sedang melihat atau menggunakan akaun pelajar ini
+    if (currentUser && (
+      currentUser.id === updatedStudent.id ||
+      (oldMatrix && currentUser.matrixNo?.trim().toUpperCase() === oldMatrix) ||
+      (newMatrix && currentUser.matrixNo?.trim().toUpperCase() === newMatrix)
+    )) {
+      setCurrentUser(updatedStudent);
+    }
+
+    // 3. Jika No. Matrik atau Nama berubah, kemas kini rekod kes dan rayuan secara serentak
+    if (oldMatrix && newMatrix && (oldMatrix !== newMatrix || existing?.name !== updatedStudent.name)) {
+      setCases(prev => prev.map(c => c.studentMatrix?.trim().toUpperCase() === oldMatrix ? {
+        ...c,
+        studentMatrix: newMatrix,
+        studentName: updatedStudent.name,
+        courseCode: updatedStudent.courseCode || c.courseCode,
+      } : c));
+      setAppeals(prev => prev.map(a => a.studentMatrix?.trim().toUpperCase() === oldMatrix ? {
+        ...a,
+        studentMatrix: newMatrix,
+        studentName: updatedStudent.name,
+      } : a));
+    }
+
+    addToast({
+      type: 'success',
+      title: 'Kemas Kini Akaun Pelajar',
+      message: `Maklumat ${updatedStudent.name} (${updatedStudent.matrixNo}) berjaya disimpan.`
+    });
   };
+
 
   const handleDeleteStudent = (studentId) => {
     const s = users.find(u => u.id === studentId);
@@ -541,8 +621,21 @@ function AppInner() {
   const pendingStaffCount = users.filter(u => u.role === 'lecturer' && u.status === 'pending').length;
   const pendingAppealsCount = appeals.filter(a => a.status === 'Pending').length;
 
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setCurrentRole(null);
+    setShowPortal(true);
+    setAdminActiveTab('dashboard');
+    localStorage.removeItem('jum_auth_user_id');
+    localStorage.removeItem('jum_auth_user_matrix');
+    localStorage.removeItem('jum_auth_role');
+    localStorage.removeItem('jum_active_tab');
+    addToast({ type: 'info', title: 'Log Keluar', message: 'Anda telah berjaya log keluar.' });
+  };
+
   const handleAdminTabChange = (tab) => {
     setAdminActiveTab(tab);
+    localStorage.setItem('jum_active_tab', tab);
   };
 
   // Halaman depan: Portal Disiplin & Buku Peraturan Digital KKTS (sebelum login)
@@ -761,7 +854,7 @@ function AppInner() {
       <TopHeader
         currentUser={currentUser}
         currentRole={currentRole}
-        onLogout={() => { setCurrentUser(null); addToast({ type: 'info', title: 'Log Keluar', message: 'Anda telah log keluar.' }); }}
+        onLogout={handleLogout}
         theme={theme}
         onToggleTheme={() => setTheme(p => p === 'dark' ? 'light' : 'dark')}
         onOpenRules={() => setIsRulesOpen(true)}
