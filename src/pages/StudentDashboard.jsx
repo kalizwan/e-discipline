@@ -71,7 +71,7 @@ function EditStudentProfileModal({ student, isOpen, onClose, onSave }) {
       semester: student.semester,
       intakeYear: student.intakeYear,
       tahunMasuk: student.tahunMasuk ?? student.intakeYear,
-      sesi: student.sesi,
+      sesi: student.sesi || sesi,
       phone,
       email,
       avatar,
@@ -178,13 +178,17 @@ function EditStudentProfileModal({ student, isOpen, onClose, onSave }) {
               />
             </div>
 
-            {/* Sesi Kemasukan */}
+            {/* Sesi Kemasukan (Berkunci - Nampak sahaja, ikut ketetapan Admin) */}
             <div>
               <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>🎓 Sesi Kemasukan 🔒</label>
-              <select className="form-select" value={sesi} disabled readOnly style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}>
-                <option value="Sesi I (Julai - Disember)">Sesi I (Julai - Disember)</option>
-                <option value="Sesi II (Januari - Jun)">Sesi II (Januari - Jun)</option>
-              </select>
+              <input
+                type="text"
+                className="form-input"
+                value={student.sesi || sesi || 'Sesi I (Julai - Disember)'}
+                disabled
+                readOnly
+                style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}
+              />
             </div>
 
             {/* No. Telefon Pelajar */}
@@ -206,21 +210,26 @@ function EditStudentProfileModal({ student, isOpen, onClose, onSave }) {
 
             <div>
               <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>Program / Kursus 🔒</label>
-              <select className="form-select" value={courseCode} disabled readOnly style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}>
-                {Object.entries(COURSE_CODES).map(([code, info]) => (
-                  <option key={code} value={code}>{code} — {info.fullName}</option>
-                ))}
-              </select>
+              <input
+                type="text"
+                className="form-input"
+                value={`${courseCode} — ${COURSE_CODES[courseCode]?.fullName || student.course || courseCode}`}
+                disabled
+                readOnly
+                style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}
+              />
             </div>
 
             <div>
               <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>Semester (Kolej Komuniti Tawau) 🔒</label>
-              <select className="form-select" value={semester} disabled readOnly style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}>
-                <option value="Semester 1">Semester 1</option>
-                <option value="Semester 2">Semester 2</option>
-                <option value="Semester 3">Semester 3</option>
-                <option value="Semester 4 (Latihan Industri)">Semester 4 (Latihan Industri)</option>
-              </select>
+              <input
+                type="text"
+                className="form-input"
+                value={semester}
+                disabled
+                readOnly
+                style={{ opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-secondary)' }}
+              />
             </div>
           </div>
 

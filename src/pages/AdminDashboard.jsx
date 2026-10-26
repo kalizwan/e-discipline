@@ -854,7 +854,7 @@ function EditStudentModal({ student, isOpen, onClose, onSave }) {
       setEmail(student.email || `${(student.matrixNo || 'pelajar').toLowerCase()}@kolej.edu.my`);
       setAvatar(student.avatar || DEFAULT_AVATAR);
     }
-  }, [student]);
+  }, [student, isOpen]);
 
   if (!isOpen || !student) return null;
 
@@ -2473,6 +2473,7 @@ export default function AdminDashboard({
   // Modals for Staff & Delete
   const [isCreateStaffOpen, setIsCreateStaffOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
+  const [studentToEdit, setStudentToEdit] = useState(null);
   const [staffToDelete, setStaffToDelete] = useState(null);
   const [selectedStaffProfile, setSelectedStaffProfile] = useState(null);
   const [staffToEdit, setStaffToEdit] = useState(null);
@@ -2906,14 +2907,24 @@ export default function AdminDashboard({
                         <span className={`badge ${s.status==='Baik'?'badge-success':s.status==='Amaran'?'badge-warning':'badge-danger'}`}>{s.status}</span>
                       </td>
                       <td style={{ textAlign: 'center' }}>
-                        <button
-                          className="btn btn-danger btn-xs"
-                          onClick={() => setStudentToDelete(s)}
-                          style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', padding: '0.25rem 0.6rem' }}
-                          title="Padam akaun pelajar ini"
-                        >
-                          <Trash2 size={12} /> Padam
-                        </button>
+                        <div style={{ display: 'inline-flex', gap: '0.35rem', alignItems: 'center' }}>
+                          <button
+                            className="btn btn-secondary btn-xs"
+                            onClick={() => setStudentToEdit(s)}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.55rem' }}
+                            title="Edit akaun pelajar ini"
+                          >
+                            <Edit3 size={12} /> Edit
+                          </button>
+                          <button
+                            className="btn btn-danger btn-xs"
+                            onClick={() => setStudentToDelete(s)}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.55rem' }}
+                            title="Padam akaun pelajar ini"
+                          >
+                            <Trash2 size={12} /> Padam
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -3071,6 +3082,14 @@ export default function AdminDashboard({
         isOpen={!!staffToEdit}
         onClose={() => setStaffToEdit(null)}
         onSave={onUpdateStaff}
+      />
+
+      {/* ─── MODAL: EDIT AKAUN PELAJAR ─── */}
+      <EditStudentModal
+        student={studentToEdit}
+        isOpen={!!studentToEdit}
+        onClose={() => setStudentToEdit(null)}
+        onSave={onUpdateStudent}
       />
 
       {/* ─── MODAL PENGESAHAN: PADAM AKAUN PELAJAR ─── */}
