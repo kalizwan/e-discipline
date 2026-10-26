@@ -968,10 +968,13 @@ function EditStudentModal({ student, isOpen, onClose, onSave }) {
             {/* Sesi Kemasukan */}
             <div>
               <label style={{ fontSize: '0.78rem', fontWeight: 600, marginBottom: '0.3rem', display: 'block' }}>🎓 Sesi Kemasukan:</label>
-              <select className="form-select" value={sesi} onChange={e => setSesi(e.target.value)}>
-                <option value="Sesi I (Julai - Disember)">Sesi I (Julai - Disember)</option>
-                <option value="Sesi II (Januari - Jun)">Sesi II (Januari - Jun)</option>
-              </select>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Cth: Sesi I (Julai - Disember) / Sesi II 2024 / Jun 2024"
+                value={sesi}
+                onChange={e => setSesi(e.target.value)}
+              />
             </div>
 
             <div>
